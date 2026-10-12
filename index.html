@@ -15,6 +15,7 @@ function pg(){try{return typeof currentPage!=='undefined'?currentPage:''}catch(e
 function mod(msg,src){
 var t=(String(msg||'')+' '+String(src||'')).toLowerCase(),p=pg();
 if(/firestore|firebase|permission-denied|unavailable/.test(t))return'Firebase / Data';
+if(/newapplications|onlineapplication|registration portal/.test(t))return'Registration Portal';
 if(/lms|quiz|lesson|facilitator/.test(t)||p==='lms')return'LMS';
 if(/staff/.test(t))return'Staff Portal';
 if(/student|portal|enrol|attendance/.test(t)||p==='students'||p==='portalmgmt')return'Student Portal';
@@ -240,9 +241,9 @@ const PC=[
 {month:"June",entries:[{date:"06/01/2026",desc:"Casual cleaner",amount:150,by:"Julia"},{date:"06/08/2026",desc:"Casual cleaner",amount:200,by:"Julia"},{date:"06/09/2026",desc:"Refreshments + cash",amount:240,by:"Julias"},{date:"06/10/2026",desc:"Travel Claims - Monitoring",amount:5836.6,by:"Julias"},{date:"06/25/2026",desc:"Mollas Furniture",amount:1820,by:"Moola's"},{date:"06/25/2026",desc:"Cassco Print",amount:402.5,by:"Cassco"}]},
 {month:"July",entries:[{date:"07/02/2026",desc:"Electricity",amount:2000,by:"Julias"},{date:"07/02/2026",desc:"24 Solutions cleaning material",amount:600,by:"Julias"},{date:"07/07/2026",desc:"OHS Study Material",amount:2000,by:"Hilside consultants"},{date:"07/09/2026",desc:"Travel for intern",amount:250,by:"Martha"},{date:"07/27/2026",desc:"Casual for Observatory",amount:200,by:"Godfrey"},{date:"07/29/2026",desc:"Casual for Observatory",amount:150,by:""}]}
 ];
-const CORE=["Hllawulani Mabasa","Lehlogonolo Mashabela","Lerato Mphahlele","Lizzy Mokoape","Mamojeng Kgaphola","Martin Monisi","Mashoahla Molepo","Ndivho Nevhutalu","Ramokone Sebopa","Raphael Phahladira","Sibongile Mashele","Tebelelo Mashoene","Thomas Lubisi","Tiyisani Chauke","Tsheege Matlawa","Tumelo Moremi","Wamashudu Radzilani","Washu Tshilamulele","Zwivhuya Ndou","Edwell Maluleke","Siphosezwe Nkosi","Nokuthula Nkosi"];
+const CORE=["Hlawulani Mabasa","Lehlogonolo Mashabela","Lerato Mphahlele","Lizzy Mokoape","Mamojeng Kgaphola","Martin Monisi","Mashoahla Molepo","Ndivho Nevhutalu","Ramokone Sebopa","Raphael Phahladira","Sibongile Mashele","Tebelelo Mashoene","Thomas Lubisi","Tiyisani Chauke","Tsheege Matlawa","Tumelo Moremi","Wamashudu Radzilani","Washu Tshilamulele","Zwivhuya Ndou","Edwell Maluleke","Siphosezwe Nkosi","Nokuthula Nkosi"];
 const Nhlamulo=["Nhlamulo Maluleke"];
-const CORE23=["Tiyisani Chauke","Lizzy Mokoape","Mamojeng Kgaphola","Thomas Lubisi","Hllawulani Mabasa","Lehlogonolo Mashabela","Sibongile Mashele","Tebelelo Mashoene","Tsheege Matlawa","Mashoahla Molepo","Martin Monisi","Tumelo Moremi","Lerato Mphahlele","Zwivhuya Ndou","Ndivho Nevhutalu","Raphael Phahladira","Wamashudu Radzilani","Ramokone Sebopa","Washu Tshilamulele","Sipho Nkosi","Edwell Maluleke","Siphosezwe Nkosi","Nokuthula Nkosi"];
+const CORE23=["Tiyisani Chauke","Lizzy Mokoape","Mamojeng Kgaphola","Thomas Lubisi","Hlawulani Mabasa","Lehlogonolo Mashabela","Sibongile Mashele","Tebelelo Mashoene","Tsheege Matlawa","Mashoahla Molepo","Martin Monisi","Tumelo Moremi","Lerato Mphahlele","Zwivhuya Ndou","Ndivho Nevhutalu","Raphael Phahladira","Wamashudu Radzilani","Ramokone Sebopa","Washu Tshilamulele","Edwell Maluleke","Siphosezwe Nkosi","Nokuthula Nkosi"];
 const REG=[
 {month:"June 2025",title:"DOT Attendance Register - June",type:"College Attendance",programme:"Diesel Mechanic (DOT)",periods:["June 2025"],students:CORE},
 {month:"July 2025",title:"July 2025 Attendance Register",type:"College Attendance",programme:"Diesel Mechanic (DOT)",periods:["July 2025 (full month)"],students:CORE23,hours:"07\u201308h00 to 15\u201316h30",notes:"Attendance consistently recorded from 07\u201308h00 to 15\u201316h30. Facilitator approvals signed weekly."},
@@ -422,6 +423,10 @@ service cloud.firestore {
     match /enrolments/{docId} {
       allow read: if request.auth != null;
       allow write: if request.auth != null;
+    }
+    match /newApplications/{docId} {
+      allow create: if true;
+      allow read, update, delete: if request.auth != null;
     }
     match /marketing/{docId} {
       allow read: if request.auth != null;
@@ -651,6 +656,16 @@ return out;
 }catch(e){console.warn('loadCollection('+col+') failed:',e.message);return null}
 }
 
+// Like loadCollection, but tells a failed read apart from a genuinely empty collection.
+async function loadCollectionChecked(col){
+if(!ready)return{ok:false,items:[]};
+try{
+const snap=await db.collection(col).get();
+const out=[];snap.forEach(d=>out.push({id:d.id,...d.data()}));
+return{ok:true,items:out};
+}catch(e){console.warn('loadCollectionChecked('+col+') failed:',e.message);return{ok:false,items:[]}}
+}
+
 async function saveCollection(col,items){
 if(!ready||!items)return false;
 try{
@@ -775,6 +790,14 @@ async function updateUserRole(uid,role,roleLabel){
 if(!ready)throw new Error('offline');
 await db.collection('users').doc(uid).update({role,roleLabel});
 }
+// LMS role override: the same lmsRoles/{email} doc the ATCE LMS reads at sign-in and writes from its own
+// Roles & Access screen. Passing no role removes the override (assigned programmes are kept).
+async function setLmsRole(email,name,role,by){
+if(!ready)throw new Error('offline');
+email=String(email||'').trim().toLowerCase();if(!email)throw new Error('This account has no email address');
+const FV=firebase.firestore.FieldValue;
+await db.collection('lmsRoles').doc(email).set({email,name:name||'',role:role||FV.delete(),updatedBy:by||'',updatedAt:new Date().toISOString()},{merge:true});
+}
 
 // ---- STUDENT PORTAL ACCOUNT PROVISIONING (secondary app; keeps admin session intact) ----
 async function provisionStudentAccount(email,password){
@@ -787,7 +810,7 @@ await sa.signOut();
 return uid;
 }
 
-return{isReady,getDb,getInitError,whenReady,runConnectionTest,loadFeeLedger,signIn,signUp,signOutUser,onAuth,COL,clean,loadCollection,saveCollection,upsertDoc,deleteDoc,watchProgrammes,watchCollection,ensureUserDoc,provisionUser,provisionStudentAccount,listUsers,updateUserRole,LOCAL_USERS,ROLE_LABELS_MAP,isStorageReady,uploadFile,deleteFile};
+return{isReady,getDb,getInitError,whenReady,runConnectionTest,loadFeeLedger,signIn,signUp,signOutUser,onAuth,COL,clean,loadCollection,loadCollectionChecked,saveCollection,upsertDoc,deleteDoc,watchProgrammes,watchCollection,ensureUserDoc,provisionUser,provisionStudentAccount,listUsers,updateUserRole,setLmsRole,LOCAL_USERS,ROLE_LABELS_MAP,isStorageReady,uploadFile,deleteFile};
 })();
 
 // ======================================================================
@@ -846,20 +869,25 @@ const r=ROLE_DEFS[currentUser.role];
 if(!r||!r.financeAccess)return false;
 return !FINANCE_BLOCKED.includes(String(currentUser.email||'').toLowerCase());
 }
+// User Management is restricted to named people only, regardless of role.
+// Dr V. Naiker (Vasi) and Andzani. Everyone else keeps their normal access without the Users tab.
+const USER_MANAGERS=['vasi@atce.co.za','andzani@atce.co.za'];
 function canManageUsers(){
 if(!currentUser)return false;
-const r=ROLE_DEFS[currentUser.role];
-return!!(r&&r.canManageUsers);
+return USER_MANAGERS.includes(String(currentUser.email||'').toLowerCase());
 }
 function allowedSections(){
 if(!currentUser)return[];
 const r=ROLE_DEFS[currentUser.role];
-return r?r.sections:[];
+if(!r)return[];
+return canManageUsers()?r.sections:r.sections.filter(x=>x!=='users');
 }
 function canAccess(section){
 if(!currentUser)return false;
 const r=ROLE_DEFS[currentUser.role];
-return r?r.sections.includes(section):false;
+if(!r)return false;
+if(section==='users')return canManageUsers();
+return r.sections.includes(section);
 }
 function applyRoleFilter(){
 const allowed=allowedSections();
@@ -874,16 +902,17 @@ if(page&&allowed.length&&!allowed.includes(page)){el.style.display='none'}else{e
 
 // ======================================================================
 // HEALTH HUB - watches the dashboard and its sub-apps (Student Portal,
-// Staff Portal, LMS). Sources: runtime errors, live Firestore probes,
+// Staff Portal, LMS, Registration Portal). Sources: runtime errors, live Firestore probes,
 // data-consistency checks and optional endpoint pings.
 // ======================================================================
 const HealthHub=(function(){
 const URL_KEY='atce_health_urls_v1';
-const APPS=['Student Portal','Staff Portal','LMS'];
+const APPS=['Student Portal','Staff Portal','LMS','Registration Portal'];
 const PROBES={
 'Student Portal':[['students','Students'],['studentRequests','Requests'],['studentResults','Results'],['announcements','Announcements'],['studentDocuments','Documents'],['attendanceCheckIns','Check-ins']],
 'Staff Portal':[['staffAttendance','Staff attendance'],['staffSchedules','Staff schedules']],
-'LMS':[['lmsCourses','Courses'],['lmsProgress','Progress'],['lmsFacilitators','Facilitators'],['enrolments','Enrolments']]
+'LMS':[['lmsCourses','Courses'],['lmsProgress','Progress'],['lmsFacilitators','Facilitators'],['enrolments','Enrolments']],
+'Registration Portal':[['newApplications','Applications']]
 };
 const S={results:null,running:false,timer:null,errFilter:'all'};
 const DAY=86400000;
@@ -945,6 +974,27 @@ c.push(cert.length?chk(G,'Certification','warn',cert.length+' learner(s) are cer
 c.push(F.length&&!F.some(function(f){return f.isActive!==false})?chk(G,'Facilitators','warn','Every facilitator is inactive.'):chk(G,'Facilitators','ok',F.filter(function(f){return f.isActive!==false}).length+' active facilitator(s).'));
 return c}
 
+function registrationData(){
+var G='Registration Portal',c=[],A=(typeof onlineApplications!=='undefined'?onlineApplications:[])||[];
+if(!A.length){c.push(chk(G,'Applications received','warn','No online applications loaded yet. Either none have been submitted or the live feed has not connected.'));return c}
+c.push(chk(G,'Applications received','ok',A.length+' application(s) synced to Leads & Enquiries.'));
+var fresh=A.filter(function(a){return String(a.status||'submitted').toLowerCase()==='submitted'});
+var stale=fresh.filter(function(a){var t=ts(a.submittedAt);return !isNaN(t)&&Date.now()-t>7*DAY});
+c.push(stale.length?chk(G,'Review backlog','warn',stale.length+' application(s) have been waiting more than 7 days'+names(stale,function(a){return a.fullName})+'.'):chk(G,'Review backlog','ok',fresh.length+' new application(s) awaiting review, none older than 7 days.'));
+var noContact=A.filter(function(a){return !a.email&&!a.phone});
+var noMail=A.filter(function(a){return !a.email});
+c.push(noContact.length?chk(G,'Contact details','error',noContact.length+' application(s) have no email or phone, so the applicant cannot be reached'+names(noContact,function(a){return a.refNo||a.id})+'.'):noMail.length?chk(G,'Contact details','warn',noMail.length+' application(s) have no email address'+names(noMail,function(a){return a.fullName})+'.'):chk(G,'Contact details','ok','Every application has contact details.'));
+var seen={},dups=[];A.forEach(function(a){var k=String(a.idNumber||'').replace(/\s/g,'');if(!k)return;if(seen[k])dups.push(a.fullName||k);seen[k]=1});
+c.push(dups.length?chk(G,'Duplicate applications','warn',dups.length+' ID number(s) appear on more than one application'+names(dups,function(x){return x})+'.'):chk(G,'Duplicate applications','ok','No duplicate ID numbers.'));
+var noDoc=A.filter(function(a){return !(Number(a.documentsUploaded)>0)});
+c.push(noDoc.length?chk(G,'ID document upload','warn',noDoc.length+' application(s) arrived without an ID/Passport upload (the file may have failed to upload)'+names(noDoc,function(a){return a.refNo||a.id})+'.'):chk(G,'ID document upload','ok','All applications include an ID/Passport upload.'));
+var progs=(typeof appProgrammes!=='undefined'?appProgrammes:[])||[];
+var badProg=progs.length?A.filter(function(a){return a.programme&&!progs.some(function(p){return p.programme===a.programme})}):[];
+c.push(badProg.length?chk(G,'Programme links','warn',badProg.length+' application(s) name a programme that is not in the dashboard'+names(badProg,function(a){return a.programme})+'.'):chk(G,'Programme links','ok','Every application matches a dashboard programme.'));
+var last=A.reduce(function(m,a){var t=ts(a.submittedAt);return isNaN(t)?m:Math.max(m,t)},0);
+if(last){var d=Math.floor((Date.now()-last)/DAY);c.push(chk(G,'Recent activity','ok','Last application '+(d===0?'today':d+' day(s) ago')+'.'))}
+return c}
+
 // ---- live probes ----
 async function probe(col){
 var t0=performance.now();
@@ -978,7 +1028,7 @@ try{c.push(FirebaseService.isStorageReady()?chk(G,'File storage','ok','Storage a
 return c}
 function runtimeChecks(){
 var out=[],hr=recentErrs(3600000);
-['Dashboard','Student Portal','Staff Portal','LMS','Firebase / Data'].forEach(function(m){
+['Dashboard','Student Portal','Staff Portal','LMS','Registration Portal','Firebase / Data'].forEach(function(m){
 var list=hr.filter(function(e){return e.module===m});
 var hard=list.filter(function(e){return e.kind==='error'||e.kind==='promise'});
 if(!list.length)return;
@@ -990,10 +1040,10 @@ if(S.running)return;S.running=true;paint();
 var checks=[];
 try{
 var parts=await Promise.all([
-systemChecks(),probesFor('Student Portal'),probesFor('Staff Portal'),probesFor('LMS'),
-pingApp('Student Portal'),pingApp('Staff Portal'),pingApp('LMS')]);
+systemChecks(),probesFor('Student Portal'),probesFor('Staff Portal'),probesFor('LMS'),probesFor('Registration Portal'),
+pingApp('Student Portal'),pingApp('Staff Portal'),pingApp('LMS'),pingApp('Registration Portal')]);
 parts.forEach(function(p){checks=checks.concat(p)});
-[studentData,staffData,lmsData].forEach(function(f){try{checks=checks.concat(f())}catch(e){checks.push(chk('Dashboard','Health check engine','error','A data check crashed: '+esc(e.message)))}});
+[studentData,staffData,lmsData,registrationData].forEach(function(f){try{checks=checks.concat(f())}catch(e){checks.push(chk('Dashboard','Health check engine','error','A data check crashed: '+esc(e.message)))}});
 checks=checks.concat(runtimeChecks());
 }catch(e){checks.push(chk('Dashboard','Health check engine','error','Checks could not complete: '+esc(e&&e.message||e)))}
 S.results={ranAt:new Date(),checks:checks};S.running=false;badge();paint()}
@@ -1017,22 +1067,22 @@ return'<div class="bg-white rounded-xl border border-gray-100 p-5"><div class="f
 function errorLog(){
 var f=S.errFilter,all=errs().slice().reverse();
 var list=f==='all'?all:all.filter(function(e){return e.module===f});
-var opts=['all','Dashboard','Student Portal','Staff Portal','LMS','Firebase / Data'].map(function(o){return'<option value="'+o+'"'+(o===f?' selected':'')+'>'+(o==='all'?'All modules':o)+'</option>'}).join('');
+var opts=['all','Dashboard','Student Portal','Staff Portal','LMS','Registration Portal','Firebase / Data'].map(function(o){return'<option value="'+o+'"'+(o===f?' selected':'')+'>'+(o==='all'?'All modules':o)+'</option>'}).join('');
 var rows=list.length?list.slice(0,60).map(function(e){var col=e.kind==='error'||e.kind==='promise'?'badge-red':(e.kind==='resource'?'badge-orange':'badge-gray');
 return'<tr class="border-b border-gray-50 align-top"><td class="px-4 py-2 text-[11px] text-gray-500 whitespace-nowrap">'+new Date(e.t).toLocaleString('en-ZA')+'</td><td class="px-4 py-2"><span class="badge badge-blue">'+esc(e.module)+'</span></td><td class="px-4 py-2"><span class="badge '+col+'">'+esc(e.kind)+'</span></td><td class="px-4 py-2 text-[11px] text-gray-700 break-words">'+esc(e.msg)+'<div class="text-[10px] text-gray-400 mt-0.5">'+(e.src?esc(e.src)+(e.line?':'+esc(e.line):'')+' &middot; ':'')+'page: '+esc(e.page||'-')+'</div></td></tr>'}).join(''):'<tr><td colspan="4" class="px-4 py-8 text-center text-xs text-gray-400">No errors captured in this browser session.</td></tr>';
 return'<div class="bg-white rounded-xl border border-gray-100 overflow-hidden mt-6"><div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between flex-wrap gap-3"><div><h3 class="text-sm font-bold text-gray-800">Runtime Error Log</h3><p class="text-[10px] text-gray-400">Uncaught errors, failed promises, failed file loads and console errors from this dashboard session</p></div><div class="flex items-center gap-2"><select onchange="HealthHub.filter(this.value)" class="text-xs border border-gray-200 rounded-lg px-2 py-1.5">'+opts+'</select><button onclick="HealthHub.exportLog()" class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-gray-200 hover:bg-gray-50">Export</button><button onclick="HealthHub.clearLog()" class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-gray-200 hover:bg-gray-50">Clear</button></div></div><div class="overflow-x-auto"><table class="w-full text-sm"><thead class="bg-gray-50 border-b border-gray-100"><tr><th class="text-left px-4 py-2 text-[10px] uppercase text-gray-500">Time</th><th class="text-left px-4 py-2 text-[10px] uppercase text-gray-500">Module</th><th class="text-left px-4 py-2 text-[10px] uppercase text-gray-500">Type</th><th class="text-left px-4 py-2 text-[10px] uppercase text-gray-500">Message</th></tr></thead><tbody id="hhLogBody">'+rows+'</tbody></table></div></div>'}
 function endpointsCard(){
 var u=urls();
 var inp=APPS.map(function(a){return'<label class="block"><span class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">'+a+' URL</span><input id="hhUrl-'+a.replace(/ /g,'')+'" type="url" value="'+esc(u[a]||'')+'" placeholder="https://" class="mt-1 w-full px-3 py-2 text-xs border border-gray-200 rounded-lg outline-none focus:border-sky-400"></label>'}).join('');
-return'<div class="bg-white rounded-xl border border-gray-100 p-5 mt-6"><h3 class="text-sm font-bold text-gray-800">Endpoints</h3><p class="text-[10px] text-gray-400 mb-3">Paste each sub-app\'s live address to have Health Hub check that it is reachable and how fast it answers. Saved in this browser only. A ping proves the site responds, not that its pages work; runtime errors and data checks cover that.</p><div class="grid grid-cols-1 md:grid-cols-3 gap-3">'+inp+'</div><div class="mt-3"><button onclick="HealthHub.saveEndpoints()" class="px-4 py-2 text-xs font-bold rounded-lg bg-[#2980b9] text-white hover:bg-[#21689a]">Save and re-check</button></div></div>'}
+return'<div class="bg-white rounded-xl border border-gray-100 p-5 mt-6"><h3 class="text-sm font-bold text-gray-800">Endpoints</h3><p class="text-[10px] text-gray-400 mb-3">Paste each sub-app\'s live address to have Health Hub check that it is reachable and how fast it answers. Saved in this browser only. A ping proves the site responds, not that its pages work; runtime errors and data checks cover that.</p><div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">'+inp+'</div><div class="mt-3"><button onclick="HealthHub.saveEndpoints()" class="px-4 py-2 text-xs font-bold rounded-lg bg-[#2980b9] text-white hover:bg-[#21689a]">Save and re-check</button></div></div>'}
 function paint(){
 var c=document.getElementById('hhRoot');if(!c)return;
 var r=S.results,ck=r?r.checks:[];
 function by(g){return ck.filter(function(x){return x.group===g})}
 var st=r?worst(ck):'ok',ne=ck.filter(function(x){return x.status==='error'}).length,nw=ck.filter(function(x){return x.status==='warn'}).length;
-var ban=!r?['bg-gray-50 border-gray-200 text-gray-600','Running first health check...']:st==='error'?['bg-red-50 border-red-200 text-red-800',ne+' issue'+(ne>1?'s':'')+' detected'+(nw?' and '+nw+' warning'+(nw>1?'s':''):'')+'. See the cards below.']:st==='warn'?['bg-amber-50 border-amber-200 text-amber-800',nw+' warning'+(nw>1?'s':'')+' to look at. Nothing is broken.']:['bg-emerald-50 border-emerald-200 text-emerald-800','All checks passed. Student Portal, Staff Portal and LMS look healthy.'];
+var ban=!r?['bg-gray-50 border-gray-200 text-gray-600','Running first health check...']:st==='error'?['bg-red-50 border-red-200 text-red-800',ne+' issue'+(ne>1?'s':'')+' detected'+(nw?' and '+nw+' warning'+(nw>1?'s':''):'')+'. See the cards below.']:st==='warn'?['bg-amber-50 border-amber-200 text-amber-800',nw+' warning'+(nw>1?'s':'')+' to look at. Nothing is broken.']:['bg-emerald-50 border-emerald-200 text-emerald-800','All checks passed. Student Portal, Staff Portal, LMS and Registration Portal look healthy.'];
 c.innerHTML='<div class="flex items-center justify-between flex-wrap gap-3 mb-4"><div class="p-4 rounded-xl border text-sm font-semibold flex-1 min-w-[240px] '+ban[0]+'">'+ban[1]+(r?'<div class="text-[10px] font-normal opacity-70 mt-0.5">Last checked '+r.ranAt.toLocaleTimeString('en-ZA')+' &middot; auto-refreshes every 60 seconds</div>':'')+'</div><button onclick="HealthHub.run()" '+(S.running?'disabled':'')+' class="px-4 py-2.5 text-xs font-bold rounded-lg bg-[#2980b9] text-white hover:bg-[#21689a] disabled:opacity-50">'+(S.running?'Checking...':'Run checks now')+'</button></div>'
-+'<div class="grid grid-cols-1 lg:grid-cols-3 gap-4">'+card('Student Portal','Data, live reads, uptime',by('Student Portal'))+card('Staff Portal','Data, live reads, uptime',by('Staff Portal'))+card('LMS','Data, live reads, uptime',by('LMS'))+'</div>'
++'<div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-4">'+card('Student Portal','Data, live reads, uptime',by('Student Portal'))+card('Staff Portal','Data, live reads, uptime',by('Staff Portal'))+card('LMS','Data, live reads, uptime',by('LMS'))+card('Registration Portal','Applications, live reads, uptime',by('Registration Portal'))+'</div>'
 +'<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">'+card('Firebase / Data','Shared database and sign-in',by('Firebase / Data'))+card('Dashboard','This app, this session',by('Dashboard'))+'</div>'
 +endpointsCard()+errorLog()}
 function render(c){
@@ -1260,6 +1310,11 @@ let currentPage='dashboard',chartInstances={},appProgrammes=[],appSites=[],appRe
 let firebaseConnected=false,dataSourceLabel='Local Data';
 
 function uid(){return crypto.randomUUID?crypto.randomUUID():Math.random().toString(36).substring(2,12)}
+// Normalised key used to recognise the same student typed slightly differently (case / spacing).
+function nameKey(n){return String(n||'').toLowerCase().replace(/\s+/g,' ').trim()}
+// Stable ID for students seeded from the historical registers, so re-seeding overwrites instead of duplicating.
+function seedId(prefix,key){return prefix+'-'+nameKey(key).replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}
+function seedStudentId(n){return 'seed-'+nameKey(n).replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}
 
 function setConnStatus(state,label){
 firebaseConnected=(state==='connected');
@@ -1467,15 +1522,17 @@ document.getElementById('loginError').classList.add('hidden');
 async function initApp(){
 const headerSubtitle=document.querySelector('header p.text-xs');if(headerSubtitle)headerSubtitle.textContent='ATCE Academic Management';
 // Render local source data immediately. Network access must never block login.
-if(!appSites.length)appSites=DataSource.getTeachingSites().map(s=>({...s,id:uid(),isActive:true}));
-if(!appProgrammes.length)appProgrammes=DataSource.getProgrammes().map(p=>({...p,id:uid(),isArchived:false,createdDate:'2024-01-15',lastUpdated:'2024-01-15',history:[{action:'System Import',field:'Record',oldVal:null,newVal:'Baseline data load',date:'2024-01-15 08:00',user:'System'}]}));
-if(!appRegisters.length)appRegisters=DataSource.getRegisters().map(r=>({...r,id:uid()}));
-if(!appPettyCash.length)appPettyCash=DataSource.getPettyCash().map(m=>({...m,id:uid(),entries:m.entries.map(e=>({...e,id:uid()}))}));
+if(!appSites.length)appSites=DataSource.getTeachingSites().map(s=>({...s,id:seedId('seed-site',s.name),isActive:true}));
+if(!appProgrammes.length)appProgrammes=DataSource.getProgrammes().map(p=>({...p,id:seedId('seed-prog',p.programme),isArchived:false,createdDate:'2024-01-15',lastUpdated:'2024-01-15',history:[{action:'System Import',field:'Record',oldVal:null,newVal:'Baseline data load',date:'2024-01-15 08:00',user:'System'}]}));
+if(!appRegisters.length)appRegisters=DataSource.getRegisters().map(r=>({...r,id:seedId('seed-reg',r.month)}));
+if(!appPettyCash.length)appPettyCash=DataSource.getPettyCash().map(m=>({...m,id:seedId('seed-petty',m.month),entries:m.entries.map((e,i)=>({...e,id:seedId('seed-petty',m.month)+'-'+i}))}));
 if(!appStudentRoster.length){
-const names=[...new Set(appRegisters.flatMap(r=>r.students||[]))].sort();
-appStudentRoster=names.map(name=>({id:uid(),name:name,isActive:true}));
+const seen=new Set(),names=[];
+appRegisters.flatMap(r=>r.students||[]).forEach(n=>{const k=nameKey(n);if(k&&!seen.has(k)){seen.add(k);names.push(String(n).trim())}});
+names.sort();
+appStudentRoster=names.map(name=>({id:seedStudentId(name),name:name,isActive:true}));
 }
-if(!appEnrolments.length)appEnrolments=DataSource.getEnrolments().map(e=>({...e,id:uid(),groups:(e.groups||[]).map(g=>({...g,id:uid()}))}));
+if(!appEnrolments.length)appEnrolments=DataSource.getEnrolments().map(e=>({...e,id:seedId('seed-enr',e.site+' '+e.programme),groups:(e.groups||[]).map(g=>({...g,id:seedId('seed-grp',e.site+' '+e.programme+' '+g.name)}))}));
 setConnStatus(FirebaseService.isReady()?'local':'offline',FirebaseService.isReady()?'Syncing':'Offline');
 refreshGlobalState();renderPage('dashboard');
 
@@ -1483,15 +1540,57 @@ refreshGlobalState();renderPage('dashboard');
 if(FirebaseService.isReady())syncCloudData();
 }
 
+
+// ---- Clean up duplicate seed records already stored in Firestore ----
+function _dupPlan(){
+const refs={};appStudentRoster.forEach(st=>{if(st.programmeId)refs[st.programmeId]=(refs[st.programmeId]||0)+1});
+const pick=(arr,score)=>arr.slice().sort((a,b)=>score(b)-score(a))[0];
+const plan=[];
+const add=(label,col,arr,keyFn,score)=>{const g={};arr.forEach(x=>{const k=keyFn(x);if(!k)return;(g[k]=g[k]||[]).push(x)});
+Object.values(g).forEach(list=>{if(list.length<2)return;const keep=pick(list,score);plan.push({label,col,keep,drop:list.filter(x=>x!==keep)})})};
+add('Programme','PROG',appProgrammes,x=>nameKey(x.programme),x=>(refs[x.id]||0)*1000+((x.history||[]).length)*10+(String(x.id).startsWith('seed-')?1:0));
+add('Site','SITES',appSites,x=>nameKey(x.name),x=>(x.isActive!==false?100:0)+(String(x.id).startsWith('seed-')?1:0));
+add('Register','REG',appRegisters,x=>nameKey(x.month),x=>(x.students||[]).length*10+(String(x.id).startsWith('seed-')?1:0));
+add('Petty cash month','PETTY',appPettyCash,x=>nameKey(x.month),x=>(x.entries||[]).length*10+(String(x.id).startsWith('seed-')?1:0));
+add('Enrolment','ENROLMENTS',appEnrolments,x=>nameKey((x.site||'')+'|'+(x.programme||'')),x=>(x.groups||[]).length*10+(String(x.id).startsWith('seed-')?1:0));
+return plan}
+function dupBanner(){
+if(!canEditSystem())return'';
+const n=_dupPlan().reduce((a,p)=>a+p.drop.length,0);if(!n)return'';
+return'<div class="mb-4 p-4 rounded-xl border border-amber-200 bg-amber-50 flex items-center justify-between gap-3 flex-wrap"><div class="text-xs text-amber-800"><strong>'+n+' duplicate record'+(n===1?'':'s')+' found</strong> (programmes, sites, registers or petty cash stored twice). This is why counts look doubled.</div><button onclick="cleanupDuplicateData()" class="px-4 py-2 text-xs font-bold text-white bg-amber-600 hover:bg-amber-700 rounded-lg">Clean up duplicates</button></div>'}
+async function cleanupDuplicateData(){
+if(!canEditSystem()){alert('You do not have permission to clean up master data.');return}
+const plan=_dupPlan();if(!plan.length){alert('No duplicates found.');return}
+const sum={};plan.forEach(p=>{sum[p.label]=(sum[p.label]||0)+p.drop.length});
+if(!confirm('Remove duplicate records?\n\n'+Object.entries(sum).map(([k,v])=>'- '+v+' duplicate '+k.toLowerCase()+(v===1?'':'s')).join('\n')+'\n\nOne copy of each is kept (the one students are linked to, or the most complete). This cannot be undone.'))return;
+const fs=typeof FirebaseService!=='undefined'&&FirebaseService.isReady();
+const dropIds={PROG:new Set(),SITES:new Set(),REG:new Set(),PETTY:new Set(),ENROLMENTS:new Set()};
+const progMap={};
+plan.forEach(p=>{p.drop.forEach(d=>{dropIds[p.col].add(d.id);if(p.col==='PROG')progMap[d.id]=p.keep.id})});
+// repoint students / LMS progress that point at a removed programme
+const studChanged=[];appStudentRoster.forEach(st=>{if(st.programmeId&&progMap[st.programmeId]){st.programmeId=progMap[st.programmeId];studChanged.push(st)}});
+const lmsChanged=[];appLmsProgress.forEach(r=>{const m=String(r.courseId||'').match(/^cloud-(.+)$/);if(m&&progMap[m[1]]){r.courseId='cloud-'+progMap[m[1]];lmsChanged.push(r)}});
+appProgrammes=appProgrammes.filter(x=>!dropIds.PROG.has(x.id));
+appSites=appSites.filter(x=>!dropIds.SITES.has(x.id));
+appRegisters=appRegisters.filter(x=>!dropIds.REG.has(x.id));
+appPettyCash=appPettyCash.filter(x=>!dropIds.PETTY.has(x.id));
+appEnrolments=appEnrolments.filter(x=>!dropIds.ENROLMENTS.has(x.id));
+if(fs){try{
+for(const col of Object.keys(dropIds))for(const id of dropIds[col])await FirebaseService.deleteDoc(FirebaseService.COL[col],id);
+for(const st of studChanged)await FirebaseService.upsertDoc(FirebaseService.COL.STUDENTS,st.id,{programmeId:st.programmeId});
+for(const r of lmsChanged)await FirebaseService.upsertDoc(FirebaseService.COL.LMSPROGRESS,r.id,{courseId:r.courseId});
+}catch(e){console.warn('Cleanup sync failed:',e.message);alert('Cleaned locally, but cloud sync failed: '+e.message)}}
+if(typeof refreshGlobalState==='function')refreshGlobalState();
+renderPage(currentPage)}
 async function syncCloudData(){
 try{
 const [sites,progs,petty,registers,students,enrolments,marketing,attendance,requests,announcements,results,feeLedger,documents,checkins,staffAttendance,lmsProgress,lmsCourses,lmsFacilitators]=await Promise.all([
-FirebaseService.loadCollection(FirebaseService.COL.SITES),
-FirebaseService.loadCollection(FirebaseService.COL.PROG),
-FirebaseService.loadCollection(FirebaseService.COL.PETTY),
-FirebaseService.loadCollection(FirebaseService.COL.REG),
-FirebaseService.loadCollection(FirebaseService.COL.STUDENTS),
-FirebaseService.loadCollection(FirebaseService.COL.ENROLMENTS),
+FirebaseService.loadCollectionChecked(FirebaseService.COL.SITES),
+FirebaseService.loadCollectionChecked(FirebaseService.COL.PROG),
+FirebaseService.loadCollectionChecked(FirebaseService.COL.PETTY),
+FirebaseService.loadCollectionChecked(FirebaseService.COL.REG),
+FirebaseService.loadCollectionChecked(FirebaseService.COL.STUDENTS),
+FirebaseService.loadCollectionChecked(FirebaseService.COL.ENROLMENTS),
 FirebaseService.loadCollection(FirebaseService.COL.MARKETING),
 FirebaseService.loadCollection(FirebaseService.COL.ATTEND),
 FirebaseService.loadCollection(FirebaseService.COL.REQUESTS),
@@ -1505,18 +1604,19 @@ FirebaseService.loadCollection(FirebaseService.COL.LMSPROGRESS),
 FirebaseService.loadCollection(FirebaseService.COL.LMSCOURSES),
 FirebaseService.loadCollection(FirebaseService.COL.LMSFACILITATORS)
 ]);
-if(sites&&sites.length)appSites=sites.map(s=>({...s,isActive:s.isActive!==false}));
-else await FirebaseService.saveCollection(FirebaseService.COL.SITES,appSites);
-if(progs&&progs.length)appProgrammes=progs.map(p=>({...p,isArchived:!!p.isArchived,history:p.history||[]}));
-else await FirebaseService.saveCollection(FirebaseService.COL.PROG,appProgrammes);
-if(petty&&petty.length)appPettyCash=petty.map(m=>({...m,entries:(m.entries||[]).map(e=>({...e,id:e.id||uid()}))}));
-else await FirebaseService.saveCollection(FirebaseService.COL.PETTY,appPettyCash);
-if(registers&&registers.length)appRegisters=registers;
-else await FirebaseService.saveCollection(FirebaseService.COL.REG,appRegisters);
-if(students&&students.length)appStudentRoster=students.map(s=>({...s,isActive:s.isActive!==false}));
-else await FirebaseService.saveCollection(FirebaseService.COL.STUDENTS,appStudentRoster);
-if(enrolments&&enrolments.length)appEnrolments=enrolments.map(e=>({...e,groups:(e.groups||[]).map(g=>({...g,id:g.id||uid()}))}));
-else await FirebaseService.saveCollection(FirebaseService.COL.ENROLMENTS,appEnrolments);
+if(sites.ok&&sites.items.length)appSites=sites.items.map(s=>({...s,isActive:s.isActive!==false}));
+else if(sites.ok)await FirebaseService.saveCollection(FirebaseService.COL.SITES,appSites);
+if(progs.ok&&progs.items.length)appProgrammes=progs.items.map(p=>({...p,isArchived:!!p.isArchived,history:p.history||[]}));
+else if(progs.ok)await FirebaseService.saveCollection(FirebaseService.COL.PROG,appProgrammes);
+if(petty.ok&&petty.items.length)appPettyCash=petty.items.map(m=>({...m,entries:(m.entries||[]).map(e=>({...e,id:e.id||uid()}))}));
+else if(petty.ok)await FirebaseService.saveCollection(FirebaseService.COL.PETTY,appPettyCash);
+if(registers.ok&&registers.items.length)appRegisters=registers.items;
+else if(registers.ok)await FirebaseService.saveCollection(FirebaseService.COL.REG,appRegisters);
+if(students.ok&&students.items.length)appStudentRoster=students.items.map(s=>({...s,isActive:s.isActive!==false}));
+else if(students.ok)await FirebaseService.saveCollection(FirebaseService.COL.STUDENTS,appStudentRoster);
+// if the read FAILED we keep the local roster and do NOT write it back (that is what used to create duplicates)
+if(enrolments.ok&&enrolments.items.length)appEnrolments=enrolments.items.map(e=>({...e,groups:(e.groups||[]).map(g=>({...g,id:g.id||uid()}))}));
+else if(enrolments.ok)await FirebaseService.saveCollection(FirebaseService.COL.ENROLMENTS,appEnrolments);
 if(marketing&&marketing.length){const cloud=marketing.find(x=>x.id==='master')||marketing[0];if(cloud&&cloud.datasets)marketingData={...marketingData,...cloud.datasets}}
 if(attendance&&attendance.length)appClassAttendance=attendance;
 if(requests&&requests.length)appRequests=requests;
@@ -1552,6 +1652,14 @@ if(currentPage==='management'&&typeof masterTab!=='undefined'&&masterTab==='port
 // Live progress listener — the ATCE LMS writes lesson/quiz completion straight
 // into "lmsProgress" in real time, so Completion Tracking and the Overview
 // KPIs refresh here automatically with no page reload needed.
+// Live announcements listener: posts made in the ATCE LMS (or elsewhere) show here without a reload.
+startOnlineApplicationsWatch();
+FirebaseService.watchCollection(FirebaseService.COL.ANNOUNCEMENTS,list=>{
+if(!list)return;
+appAnnouncements=list;
+if(currentPage==='lms'&&lmsTab==='announcements')renderLmsTab();
+else if(typeof portalSub!=='undefined'&&portalSub==='announcements'&&document.getElementById('portalSubContent'))renderPortalAnnouncements();
+});
 FirebaseService.watchCollection(FirebaseService.COL.LMSPROGRESS,list=>{
 if(!list)return;
 const changed=JSON.stringify(list.map(r=>r.id+':'+r.updatedAt).sort())!==JSON.stringify(appLmsProgress.map(r=>r.id+':'+r.updatedAt).sort());
@@ -1612,10 +1720,11 @@ function lmsTypeIcon(t){const m={read:'📖',video:'🎬',quiz:'📝'};return m[
 
 let lmsTab='overview',lmsSelectedCourse=null;
 function lmsTabBtn(id,label){const active=lmsTab===id;return '<button onclick="setLmsTab(\''+id+'\')" id="lmstab-'+id+'" class="px-4 py-2.5 rounded-xl text-sm font-bold transition-all '+(active?'bg-gradient-to-r from-blue-600 to-sky-500 text-white shadow-lg shadow-blue-500/25':'bg-white text-gray-500 border border-gray-200 hover:bg-gray-50')+'">'+label+'</button>'}
-const LMS_TABS=[['overview','Overview'],['programmes','Programmes & Modules'],['enrolments','Enrolments'],['lessons','Lessons & Materials'],['assessments','Assessments & Quiz Results'],['completion','Completion Tracking'],['facilitators','Facilitators'],['reports','Analytics & Reports']];
+const LMS_TABS=[['overview','Overview'],['programmes','Programmes & Modules'],['enrolments','Enrolments'],['lessons','Lessons & Materials'],['assessments','Assessments & Quiz Results'],['completion','Completion Tracking'],['facilitators','Facilitators'],['staffroles','Staff & Roles'],['announcements','Announcements'],['reports','Analytics & Reports']];
+function lmsVisibleTabs(){return LMS_TABS.filter(([id])=>id!=='staffroles'||canManageUsers())}
 function setLmsTab(t){lmsTab=t;LMS_TABS.forEach(([id])=>{const b=document.getElementById('lmstab-'+id);if(b)b.className='px-4 py-2.5 rounded-xl text-sm font-bold transition-all '+(id===t?'bg-gradient-to-r from-blue-600 to-sky-500 text-white shadow-lg shadow-blue-500/25':'bg-white text-gray-500 border border-gray-200 hover:bg-gray-50')});renderLmsTab()}
 function renderLMS(c){
-c.innerHTML='<div class="fade-in"><div class="mb-5 flex flex-wrap gap-2">'+LMS_TABS.map(([id,label])=>lmsTabBtn(id,label)).join('')+'</div><div id="lmsContent"></div></div>';
+c.innerHTML='<div class="fade-in"><div class="mb-5 flex flex-wrap gap-2">'+lmsVisibleTabs().map(([id,label])=>lmsTabBtn(id,label)).join('')+'</div><div id="lmsContent"></div></div>';
 renderLmsTab();
 }
 function renderLmsTab(){
@@ -1627,6 +1736,8 @@ else if(lmsTab==='lessons')renderLmsLessons(el);
 else if(lmsTab==='assessments')renderQuizResults();
 else if(lmsTab==='completion')renderLmsCompletion(el);
 else if(lmsTab==='facilitators')renderLmsFacilitators(el);
+else if(lmsTab==='staffroles')renderLmsStaffRoles(el);
+else if(lmsTab==='announcements')renderLmsAnnouncements(el);
 else renderLmsReports(el);
 }
 
@@ -1729,7 +1840,7 @@ quizResultKpi('kpi-emerald','Learners Enrolled',enrolled.length)+
 quizResultKpi('kpi-purple','Total Students',students.length)+
 quizResultKpi('kpi-orange','Not Yet Linked',students.length-enrolled.length)+
 '</div>';
-h+='<div class="bg-white rounded-xl border border-gray-100 overflow-hidden"><div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between flex-wrap gap-3"><div><h3 class="text-sm font-semibold text-gray-700">Student Enrolments</h3><p class="text-[10px] text-gray-400">Enrolment is the student\'s Programme link &middot; the same field the ATCE LMS reads on sign-in</p></div><input type="text" id="lmsEnrolSearch" placeholder="Search student or programme..." class="px-3 py-2 text-sm border border-gray-200 rounded-lg outline-none focus:border-blue-400 w-64" oninput="filterLmsEnrol()"></div><div class="overflow-x-auto" style="max-height:calc(100vh - 420px)"><table class="w-full text-sm"><thead class="bg-gray-50 border-b border-gray-100"><tr><th class="text-left px-4 py-3 text-gray-600 text-xs uppercase font-semibold">Student</th><th class="text-left px-4 py-3 text-gray-600 text-xs uppercase font-semibold">Programme</th><th class="text-left px-4 py-3 text-gray-600 text-xs uppercase font-semibold">LMS Course</th><th class="text-center px-4 py-3 text-gray-600 text-xs uppercase font-semibold">LMS Status</th><th class="text-right px-4 py-3 text-gray-600 text-xs uppercase font-semibold">Action</th></tr></thead><tbody id="lmsEnrolTB"></tbody></table></div></div>';
+h+='<div class="bg-white rounded-xl border border-gray-100 overflow-hidden"><div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between flex-wrap gap-3"><div><h3 class="text-sm font-semibold text-gray-700">Student Enrolments</h3><p class="text-[10px] text-gray-400">Enrolment is the student\'s Programme link &middot; the same field the ATCE LMS reads on sign-in</p></div><div class="flex items-center gap-2 flex-wrap">'+(canManage?'<button onclick="openLmsBulkMove()" class="px-3 py-2 bg-blue-600 text-white text-xs font-bold rounded-lg hover:bg-blue-700">Move students&hellip;</button>':'')+'<input type="text" id="lmsEnrolSearch" placeholder="Search student or programme..." class="px-3 py-2 text-sm border border-gray-200 rounded-lg outline-none focus:border-blue-400 w-64" oninput="filterLmsEnrol()"></div></div><div class="overflow-x-auto" style="max-height:calc(100vh - 420px)"><table class="w-full text-sm"><thead class="bg-gray-50 border-b border-gray-100"><tr><th class="text-left px-4 py-3 text-gray-600 text-xs uppercase font-semibold">Student</th><th class="text-left px-4 py-3 text-gray-600 text-xs uppercase font-semibold">Programme</th><th class="text-left px-4 py-3 text-gray-600 text-xs uppercase font-semibold">LMS Course</th><th class="text-center px-4 py-3 text-gray-600 text-xs uppercase font-semibold">LMS Status</th><th class="text-right px-4 py-3 text-gray-600 text-xs uppercase font-semibold">Action</th></tr></thead><tbody id="lmsEnrolTB"></tbody></table></div></div>';
 el.innerHTML=h;
 filterLmsEnrol();
 }
@@ -1741,6 +1852,69 @@ const list=students.filter(({s,p})=>{if(!q)return true;const hay=(s.name+' '+(p?
 const tb=document.getElementById('lmsEnrolTB');if(!tb)return;
 tb.innerHTML=list.length?list.map(({s,p,course})=>'<tr class="border-b border-gray-50 hover:bg-blue-50/30"><td class="px-4 py-2.5 font-medium text-gray-900">'+UI.escapeHtml(s.name)+'</td><td class="px-4 py-2.5 text-xs text-gray-600">'+(p?UI.escapeHtml(p.programme):'<span class="text-gray-400">Not linked</span>')+'</td><td class="px-4 py-2.5 text-xs text-gray-700">'+(course?UI.escapeHtml(course.title):'<span class="text-gray-400">—</span>')+'</td><td class="px-4 py-2.5 text-center">'+(course?'<span class="badge badge-green">Enrolled</span>':(p?'<span class="badge badge-yellow">No LMS Content</span>':'<span class="badge badge-gray">Not Enrolled</span>'))+'</td><td class="px-4 py-2.5 text-right">'+(canManage?'<button onclick="openLmsEnrolForm(\''+s.id+'\')" class="px-3 py-1.5 text-xs font-semibold text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100">Change Programme</button>':'<span class="text-[10px] text-gray-400">View only</span>')+'</td></tr>').join(''):'<tr><td colspan="5" class="px-4 py-10 text-center text-gray-400">No students match your search.</td></tr>';
 }
+// ---------- Bulk move: re-enrol every active student on one programme onto another ----------
+// Changes the same Programme link the ATCE LMS reads on sign-in, and re-points any LMS
+// programme assignment (lmsRoles) for those students, so both systems agree.
+function lmsBulkSet(){
+const f=document.getElementById('bmFrom')?.value||'',t=document.getElementById('bmTo')?.value||'';
+const fp=appProgrammes.find(p=>p.id===f)||null,tp=appProgrammes.find(p=>p.id===t)||null;
+const list=f?appStudentRoster.filter(s=>s.isActive!==false&&s.programmeId===f):[];
+return{f,t,fp,tp,list,fc:fp?matchLmsCourse(fp.programme):null,tc:tp?matchLmsCourse(tp.programme):null};
+}
+function lmsBulkOpts(sel){return active().map(p=>'<option value="'+p.id+'"'+(p.id===sel?' selected':'')+'>'+UI.escapeHtml(p.programme)+(p.venue?' ('+UI.escapeHtml(p.venue)+')':'')+'</option>').join('')}
+function openLmsBulkMove(){
+if(!canManageLMS()){alert('You do not have permission to move students between programmes.');return}
+const byName=n=>active().find(p=>lmsNormTitle(p.programme)===lmsNormTitle(n));
+const from=byName('Diesel Mechanic'),to=byName('Automotive Motor Mechanic');
+const html='<form class="space-y-4" onsubmit="return false">'+
+'<label class="block"><span class="block text-xs font-semibold text-gray-600 mb-1">Move students currently on</span><select id="bmFrom" class="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg" onchange="lmsBulkPreview()"><option value="">Select programme</option>'+lmsBulkOpts(from&&from.id)+'</select></label>'+
+'<label class="block"><span class="block text-xs font-semibold text-gray-600 mb-1">Enrol them on</span><select id="bmTo" class="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg" onchange="lmsBulkPreview()"><option value="">Select programme</option>'+lmsBulkOpts(to&&to.id)+'</select></label>'+
+'<div id="bmPreview"></div></form>';
+openMasterDataModal('Move students between programmes',html,()=>runLmsBulkMove());
+lmsBulkPreview();
+}
+function lmsBulkPreview(){
+const el=document.getElementById('bmPreview');if(!el)return;
+const {f,t,fp,tp,list,fc,tc}=lmsBulkSet();
+if(!f||!t){el.innerHTML='<p class="text-xs text-gray-400">Choose both programmes to see who will move.</p>';return}
+if(f===t){el.innerHTML='<p class="text-xs text-amber-700">Pick two different programmes.</p>';return}
+const ids=new Set(list.map(s=>s.id));
+const prog=fc?(appLmsProgress||[]).filter(r=>ids.has(r.studentId)&&r.courseId===fc.id).length:0;
+let h='<div class="p-3 rounded-lg bg-blue-50 border border-blue-100 text-xs text-blue-900"><strong>'+list.length+'</strong> active student'+(list.length===1?'':'s')+' will move from <strong>'+UI.escapeHtml(fp.programme)+'</strong> to <strong>'+UI.escapeHtml(tp.programme)+'</strong>.</div>';
+if(list.length)h+='<div class="mt-2 max-h-40 overflow-y-auto border border-gray-100 rounded-lg divide-y divide-gray-50">'+list.map(s=>'<div class="px-3 py-1.5 text-xs text-gray-700">'+UI.escapeHtml(s.name||'')+(s.studentNumber?' <span class="text-gray-400">&middot; '+UI.escapeHtml(s.studentNumber)+'</span>':'')+'</div>').join('')+'</div>';
+if(!tc)h+='<p class="mt-2 text-[11px] text-amber-700">&#9888; '+UI.escapeHtml(tp.programme)+' has no LMS course yet, so these learners will see no LMS content.</p>';
+if(prog)h+='<p class="mt-2 text-[11px] text-amber-700">&#9888; '+prog+' LMS progress record'+(prog===1?'':'s')+' on <strong>'+UI.escapeHtml(fc.title)+'</strong> stay on file as history but do not carry over, because the two programmes have different lessons. Learners start the new course from 0%.</p>';
+el.innerHTML=h;
+}
+async function runLmsBulkMove(){
+if(!canManageLMS()){alert('You do not have permission to move students between programmes.');return}
+const {f,t,fp,tp,list,fc,tc}=lmsBulkSet();
+if(!f||!t||f===t){alert('Choose two different programmes.');return}
+if(!list.length){alert('There are no active students on '+fp.programme+'.');return}
+if(!(typeof FirebaseService!=='undefined'&&FirebaseService.isReady())){alert('Firebase must be connected to move students.');return}
+if(!confirm('Move '+list.length+' student'+(list.length===1?'':'s')+' from '+fp.programme+' to '+tp.programme+'?\n\nThis updates their enrolment in the Dashboard and the LMS.'))return;
+const res=await Promise.all(list.map(s=>FirebaseService.upsertDoc(FirebaseService.COL.STUDENTS,s.id,{programmeId:t})));
+const ok=list.filter((s,i)=>res[i]),failed=list.filter((s,i)=>!res[i]);
+ok.forEach(s=>{const i=appStudentRoster.findIndex(x=>x.id===s.id);if(i>-1)appStudentRoster[i]={...appStudentRoster[i],programmeId:t}});
+let lmsFixed=0,lmsErr=false;
+if(ok.length&&fc&&tc){
+try{
+const roles=(await FirebaseService.loadCollection('lmsRoles'))||[];
+const emails=new Set(ok.map(s=>String(s.email||'').toLowerCase()).filter(Boolean)),nums=new Set(ok.map(s=>s.studentNumber).filter(Boolean));
+const hits=roles.filter(r=>r.role==='student'&&Array.isArray(r.programmeIds)&&r.programmeIds[0]===fc.id&&(emails.has(String(r.email||r.id).toLowerCase())||(r.studentNo&&nums.has(r.studentNo))));
+const wr=await Promise.all(hits.map(r=>FirebaseService.upsertDoc('lmsRoles',r.id,{programmeIds:[tc.id].concat(r.programmeIds.slice(1)),updatedBy:(currentUser&&currentUser.email)||'',updatedAt:new Date().toISOString()})));
+lmsFixed=wr.filter(Boolean).length;
+}catch(e){lmsErr=true}
+}
+closeMasterDataModal();
+alert('Moved '+ok.length+' of '+list.length+' student'+(list.length===1?'':'s')+' to '+tp.programme+'.'+
+(lmsFixed?'\n'+lmsFixed+' LMS programme assignment'+(lmsFixed===1?'':'s')+' updated.':'')+
+(lmsErr?'\nCould not check LMS programme assignments. Review them under Roles & Access in the LMS.':'')+
+(failed.length?'\n\nNot moved ('+failed.length+'): '+failed.map(s=>s.name).join(', ')+'. Check the connection and run it again.':'')+
+'\n\nLearners see the change in the LMS the next time they open it.');
+renderPage('lms');
+}
+
 // Self-contained LMS enrolment editor: only touches a student's programmeId
 // (the field the ATCE LMS reads on sign-in), so LMS administrators — the
 // Staff role included — can manage enrolments here without also gaining
@@ -1825,6 +1999,118 @@ else{const rec={...d,id:uid()};appLmsFacilitators.push(rec);FirebaseService.upse
 closeMasterDataModal();renderPage('lms');
 }
 
+// ---------- Staff & Roles (LMS role management) ----------
+// Sets what each staff member can do when they sign in to the ATCE LMS.
+// Writes lmsRoles/{email}: the same record the LMS's own Roles & Access screen
+// uses, so changes made in either place stay in sync. No override = the LMS
+// default for their Dashboard role. Restricted to User Managers because it
+// grants access (otherwise a Staff user could promote themselves).
+const LMS_ROLE_DEFS={
+superadmin:{label:'Super Admin',badge:'badge-green',desc:'Full control: roles, system settings and every programme.'},
+admin:{label:'Admin',badge:'badge-blue',desc:'Runs the register, announcements, calendar and course builder.'},
+facilitator:{label:'Facilitator',badge:'badge-purple',desc:'Teaches assigned programmes: attendance, grading and course content.'}
+};
+function lmsDefaultRoleFor(dashRole){
+if(dashRole==='full'||dashRole==='it_full')return'superadmin';
+if(dashRole==='admin'||dashRole==='admin_marketing')return'admin';
+return'facilitator';
+}
+let lmsStaffList=[],lmsRoleMap={};
+function lmsEffectiveRole(u){const o=lmsRoleMap[String(u.email||'').toLowerCase()];return(o&&o.role&&LMS_ROLE_DEFS[o.role])?o.role:lmsDefaultRoleFor(u.role)}
+function lmsHasOverride(u){const o=lmsRoleMap[String(u.email||'').toLowerCase()];return !!(o&&o.role&&LMS_ROLE_DEFS[o.role])}
+function lmsRoleBadge(k){const r=LMS_ROLE_DEFS[k]||LMS_ROLE_DEFS.facilitator;return '<span class="badge '+r.badge+'">'+r.label+'</span>'}
+async function renderLmsStaffRoles(el){
+if(!canManageUsers()){el.innerHTML='<div class="p-6 rounded-xl border border-amber-200 bg-amber-50 text-xs text-amber-800">LMS roles can only be changed by User Managers.</div>';return}
+el.innerHTML='<div class="bg-white rounded-xl border border-gray-100 p-8 text-center text-gray-400 text-sm">Loading staff accounts...</div>';
+const [users,roles]=await Promise.all([FirebaseService.listUsers(),FirebaseService.loadCollection('lmsRoles')]);
+lmsStaffList=users;lmsRoleMap={};(roles||[]).forEach(r=>{lmsRoleMap[String(r.email||r.id||'').toLowerCase()]=r});
+drawLmsStaffRoles();
+}
+function drawLmsStaffRoles(){
+const el=document.getElementById('lmsContent');if(!el||lmsTab!=='staffroles')return;
+const counts={superadmin:0,admin:0,facilitator:0};
+lmsStaffList.forEach(u=>{counts[lmsEffectiveRole(u)]++});
+let h='<div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-5">'+
+quizResultKpi('kpi-emerald','Super Admins',counts.superadmin)+
+quizResultKpi('kpi-blue','Admins',counts.admin)+
+quizResultKpi('kpi-purple','Facilitators',counts.facilitator)+
+quizResultKpi('kpi-orange','Staff Accounts',lmsStaffList.length)+
+'</div>';
+h+='<div class="bg-white rounded-xl border border-gray-100 p-5 mb-5"><h3 class="text-sm font-semibold text-gray-800 mb-3">LMS Role Guide</h3><div class="grid grid-cols-1 md:grid-cols-3 gap-3">'+
+Object.keys(LMS_ROLE_DEFS).map(k=>'<div class="flex gap-3 items-start">'+lmsRoleBadge(k)+'<p class="text-[11px] text-gray-500 leading-relaxed">'+LMS_ROLE_DEFS[k].desc+'</p></div>').join('')+
+'</div></div>';
+h+='<div class="bg-white rounded-xl border border-gray-100 overflow-hidden"><div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between flex-wrap gap-3"><div><h3 class="text-sm font-semibold text-gray-800">Staff LMS Roles</h3><p class="text-[10px] text-gray-400 mt-0.5">Changes apply the next time the person signs in to the LMS</p></div>'+
+'<input type="text" id="lmsStaffSearch" placeholder="Search staff..." class="px-3 py-2 text-sm border border-gray-200 rounded-lg outline-none focus:border-blue-400 w-56" oninput="filterLmsStaffRoles()"></div>'+
+'<div class="overflow-x-auto"><table class="w-full text-sm"><thead class="bg-gray-50 border-b border-gray-100"><tr>'+
+['Staff Member','Email','Dashboard Role','LMS Role',''].map((t,i)=>'<th class="'+(i===4?'text-right':'text-left')+' px-4 py-3 text-[10px] uppercase text-gray-600 font-semibold">'+t+'</th>').join('')+
+'</tr></thead><tbody id="lmsStaffTB"></tbody></table></div></div>';
+el.innerHTML=h;
+filterLmsStaffRoles();
+}
+function filterLmsStaffRoles(){
+const q=(document.getElementById('lmsStaffSearch')?.value||'').toLowerCase();
+const tb=document.getElementById('lmsStaffTB');if(!tb)return;
+const myEmail=String(currentUser&&currentUser.email||'').toLowerCase();
+const list=lmsStaffList.filter(u=>!q||((u.name||'')+' '+(u.email||'')).toLowerCase().includes(q));
+tb.innerHTML=list.length?list.map(u=>{
+const isMe=myEmail&&String(u.email||'').toLowerCase()===myEmail;
+return '<tr class="border-b border-gray-50 hover:bg-blue-50/30'+(isMe?' bg-blue-50/50':'')+'"><td class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap">'+UI.escapeHtml(u.name||'')+(isMe?'<span class="badge badge-blue ml-2">You</span>':'')+'</td>'+
+'<td class="px-4 py-3 font-mono text-xs text-sky-700">'+UI.escapeHtml(u.email||'')+'</td>'+
+'<td class="px-4 py-3 text-xs text-gray-600">'+UI.escapeHtml(u.roleLabel||ROLE_LABELS_MAP[u.role]||u.role||'')+'</td>'+
+'<td class="px-4 py-3">'+lmsRoleBadge(lmsEffectiveRole(u))+'<span class="text-[10px] text-gray-400 ml-2">'+(lmsHasOverride(u)?'custom':'default')+'</span></td>'+
+'<td class="px-4 py-3 text-right">'+(isMe?'<span class="text-[10px] text-gray-300" title="You cannot change your own LMS role">Locked</span>':'<button onclick="openLmsStaffRoleForm(\''+UI.escapeHtml(u.uid)+'\')" class="px-2.5 py-1 bg-blue-50 text-blue-700 hover:bg-blue-100 text-[11px] font-bold rounded-lg">Change Role</button>')+'</td></tr>';
+}).join(''):'<tr><td colspan="5" class="px-4 py-10 text-center text-sm text-gray-400">'+(lmsStaffList.length?'No staff match your search.':'No staff accounts found. Check the Firebase connection.')+'</td></tr>';
+}
+function openLmsStaffRoleForm(uid){
+if(!canManageUsers()){alert('Only User Managers can change LMS roles.');return}
+const u=lmsStaffList.find(x=>x.uid===uid);if(!u)return;
+const def=lmsDefaultRoleFor(u.role),o=lmsRoleMap[String(u.email||'').toLowerCase()],cur=(o&&o.role&&LMS_ROLE_DEFS[o.role])?o.role:'';
+const opts='<option value=""'+(cur===''?' selected':'')+'>Follow Dashboard role (default: '+LMS_ROLE_DEFS[def].label+')</option>'+
+Object.keys(LMS_ROLE_DEFS).map(k=>'<option value="'+k+'"'+(cur===k?' selected':'')+'>'+LMS_ROLE_DEFS[k].label+'</option>').join('');
+const html='<form id="lmsStaffRoleForm" class="space-y-4" onsubmit="return false"><div class="text-xs text-gray-500 -mt-1 mb-2">'+UI.escapeHtml(u.name||'')+' &middot; '+UI.escapeHtml(u.email||'')+'</div>'+
+'<label class="block"><span class="block text-xs font-semibold text-gray-600 mb-1">LMS Role</span><select id="lmsRoleSel" class="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg" onchange="lmsRoleHint(\''+def+'\')">'+opts+'</select></label>'+
+'<p id="lmsRoleHint" class="text-[11px] text-gray-500 leading-relaxed"></p>'+
+'<p class="text-[10px] text-gray-400">This only changes what they can do in the LMS. Their Dashboard access is managed under User Management.</p></form>';
+openMasterDataModal('LMS Role: '+(u.name||u.email),html,()=>saveLmsStaffRole(uid));
+lmsRoleHint(def);
+}
+function lmsRoleHint(def){
+const v=document.getElementById('lmsRoleSel')?.value||def;const el=document.getElementById('lmsRoleHint');
+if(el)el.textContent=(LMS_ROLE_DEFS[v]||LMS_ROLE_DEFS[def]).desc;
+}
+async function saveLmsStaffRole(uid){
+if(!canManageUsers()){alert('Only User Managers can change LMS roles.');return}
+const u=lmsStaffList.find(x=>x.uid===uid);if(!u)return;
+const val=document.getElementById('lmsRoleSel').value;
+if(!(typeof FirebaseService!=='undefined'&&FirebaseService.isReady())){alert('Firebase must be connected to change LMS roles.');return}
+try{
+await FirebaseService.setLmsRole(u.email,u.name,val,currentUser&&currentUser.email);
+const k=String(u.email||'').toLowerCase();
+lmsRoleMap[k]={...(lmsRoleMap[k]||{}),email:k,name:u.name||'',role:val||undefined};
+closeMasterDataModal();drawLmsStaffRoles();
+}catch(e){
+alert('Could not update LMS role: '+(e&&e.message||'unknown error')+'\n\nIf this says "permission denied", the Firestore rules need to allow signed-in staff to write the lmsRoles collection.');
+}
+}
+
+// ---------- Announcements (shared with the ATCE LMS, Student Portal and Staff Portal) ----------
+function announceAudienceLabel(a){return a.cohort||({students:'Students',staff:'Staff',all:'Everyone',cohort:'Selected learners'}[a.audience]||a.audience||'Students')}
+function announceBadges(a){
+return ' &middot; <span class="badge badge-gray">'+UI.escapeHtml(announceAudienceLabel(a))+'</span>'+(a.priority==='Urgent'?' <span class="badge badge-red">Urgent</span>':'')+(a.source==='lms'?' <span class="badge badge-blue">via LMS</span>':'');
+}
+function refreshAnnouncementViews(){
+if(currentPage==='lms'&&lmsTab==='announcements')renderLmsTab();
+else if(document.getElementById('masterControlContent'))renderMasterPortal();
+}
+function renderLmsAnnouncements(el){
+const edit=canManageLMS();
+const list=[...appAnnouncements].sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||'')));
+let h='<div class="bg-white rounded-xl border border-gray-100 overflow-hidden"><div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between flex-wrap gap-3"><div><h3 class="text-sm font-semibold text-gray-800">Announcements</h3><p class="text-[10px] text-gray-400 mt-0.5">Live feed shared with the LMS and portals &middot; posts from facilitators and admins in the LMS appear here automatically</p></div>'+(edit?'<button onclick="openAnnouncementForm()" class="px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded-lg inline-flex items-center gap-2">'+iconSet.plus+'New Announcement</button>':'')+'</div>';
+h+=list.length?'<div class="divide-y divide-gray-50">'+list.map(a=>'<div class="p-4 flex items-start justify-between gap-3"><div class="min-w-0"><div class="font-semibold text-gray-900 text-sm">'+UI.escapeHtml(a.title||'')+'</div><p class="text-sm text-gray-600 mt-1 whitespace-pre-line">'+UI.escapeHtml(a.body||'')+'</p><div class="text-[10px] text-gray-400 mt-2">'+(a.createdAt?new Date(a.createdAt).toLocaleString():'')+' &middot; '+UI.escapeHtml(a.postedBy||'Staff')+announceBadges(a)+'</div></div>'+(edit?'<button onclick="deleteAnnouncement(\''+UI.escapeHtml(a.id)+'\')" class="shrink-0 p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg" title="Delete"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>':'')+'</div>').join('')+'</div>':'<div class="p-10 text-center text-sm text-gray-400">No announcements yet.</div>';
+h+='</div>';
+el.innerHTML=h;
+}
+
 // ---------- Analytics & Reports ----------
 function renderLmsReports(el){
 const rows=appLmsProgress||[];
@@ -1880,7 +2166,7 @@ const k=BusinessLogic.getKPIs(),sites=appSites.filter(s=>s.isActive),wl=DataSour
 const ic={tp:'<svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>',f2f:'<svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0z"/></svg>',bo:'<svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25A2.25 2.25 0 015.25 3h13.5A2.25 2.25 0 0121 5.25z"/></svg>',si:'<svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3H21m-3.75 3H21"/></svg>',al:'<svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',un:'<svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>',mm:'<svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m3.82 6.017V4.356"/></svg>',sg:'<svg class="w-5 h-5 text-yellow-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>'};
 function kpiCard(l,v,i,co,onclick,hint){return '<div class="kpi-card '+co+' p-5 card-hover'+(onclick?' cursor-pointer':'')+'"'+(onclick?' role="button" tabindex="0" onclick="'+onclick+'" onkeydown="if(event.key===\'Enter\')('+onclick+')"':'')+'><div class="flex items-center justify-between mb-3"><span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">'+l+'</span><div class="w-9 h-9 rounded-lg bg-gray-50 flex items-center justify-center">'+i+'</div></div><div class="text-3xl font-extrabold text-gray-900 tracking-tight">'+v+'</div>'+(onclick?'<div class="text-[10px] font-semibold text-gray-400 mt-1">'+(hint||'View details')+' &rarr;</div>':'')+'</div>'}
 const readyPct=Math.round((k.allocated/k.totalProgrammes)*100);
-let h='<div class="fade-in"><div class="mb-6 p-5 rounded-2xl border border-sky-100 bg-gradient-to-r from-sky-50 via-white to-indigo-50 relative overflow-hidden"><div class="absolute top-0 right-0 w-40 h-40 opacity-[0.04]"><svg viewBox="0 0 200 200" fill="none"><circle cx="100" cy="100" r="80" stroke="#3b82f6" stroke-width="1"/><circle cx="100" cy="100" r="60" stroke="#3b82f6" stroke-width="0.5"/><circle cx="100" cy="100" r="40" stroke="#3b82f6" stroke-width="0.5"/><line x1="100" y1="20" x2="100" y2="180" stroke="#3b82f6" stroke-width="0.5"/><line x1="20" y1="100" x2="180" y2="100" stroke="#3b82f6" stroke-width="0.5"/></svg></div><div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 relative"><div><h2 class="text-base font-bold text-gray-800">2026 Rollout Readiness</h2><p class="text-sm text-gray-500 mt-0.5">'+k.allocated+' of '+k.totalProgrammes+' programmes allocated &middot; '+k.modeMismatches+' mismatches &middot; '+k.sourceGaps+' source gaps</p></div><div class="flex items-center gap-3"><div class="w-24 h-2 bg-gray-200 rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-blue-500 to-emerald-400 rounded-full" style="width:'+readyPct+'%"></div></div><span class="text-2xl font-extrabold text-gray-900">'+readyPct+'%</span></div></div></div><div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">'+kpiCard('Total Programmes',k.totalProgrammes,ic.tp,'kpi-blue')+kpiCard('Face-to-Face',k.faceToFace,ic.f2f,'kpi-indigo')+kpiCard('Blended / Online',k.blendedOnline,ic.bo,'kpi-purple')+kpiCard('Sites',k.totalSites,ic.si,'kpi-emerald')+'</div>';
+let h='<div class="fade-in">'+dupBanner()+'<div class="mb-6 p-5 rounded-2xl border border-sky-100 bg-gradient-to-r from-sky-50 via-white to-indigo-50 relative overflow-hidden"><div class="absolute top-0 right-0 w-40 h-40 opacity-[0.04]"><svg viewBox="0 0 200 200" fill="none"><circle cx="100" cy="100" r="80" stroke="#3b82f6" stroke-width="1"/><circle cx="100" cy="100" r="60" stroke="#3b82f6" stroke-width="0.5"/><circle cx="100" cy="100" r="40" stroke="#3b82f6" stroke-width="0.5"/><line x1="100" y1="20" x2="100" y2="180" stroke="#3b82f6" stroke-width="0.5"/><line x1="20" y1="100" x2="180" y2="100" stroke="#3b82f6" stroke-width="0.5"/></svg></div><div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 relative"><div><h2 class="text-base font-bold text-gray-800">2026 Rollout Readiness</h2><p class="text-sm text-gray-500 mt-0.5">'+k.allocated+' of '+k.totalProgrammes+' programmes allocated &middot; '+k.modeMismatches+' mismatches &middot; '+k.sourceGaps+' source gaps</p></div><div class="flex items-center gap-3"><div class="w-24 h-2 bg-gray-200 rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-blue-500 to-emerald-400 rounded-full" style="width:'+readyPct+'%"></div></div><span class="text-2xl font-extrabold text-gray-900">'+readyPct+'%</span></div></div></div><div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">'+kpiCard('Total Programmes',k.totalProgrammes,ic.tp,'kpi-blue')+kpiCard('Face-to-Face',k.faceToFace,ic.f2f,'kpi-indigo')+kpiCard('Blended / Online',k.blendedOnline,ic.bo,'kpi-purple')+kpiCard('Sites',k.totalSites,ic.si,'kpi-emerald')+'</div>';
 h+='<div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">'+kpiCard('Allocated',k.allocated,ic.al,'kpi-green',"nav('allocation')",'See allocation')+kpiCard('Unallocated',k.unallocated,ic.un,'kpi-red',"nav('reports');setReportTab('standard');setTimeout(()=>showReport('exc'),120)",'See exceptions')+kpiCard('Mode Mismatches',k.modeMismatches,ic.mm,'kpi-orange',"nav('reports');setReportTab('standard');setTimeout(()=>showReport('exc'),120)",'See exceptions')+kpiCard('Source Gaps',k.sourceGaps,ic.sg,'kpi-yellow',"nav('reports');setReportTab('standard');setTimeout(()=>showReport('exc'),120)",'See exceptions')+'</div>';
 h+='<div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">'
 +'<div class="lg:col-span-2 bg-white rounded-xl border border-gray-100 p-4"><h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Quick Actions</h3><div class="grid grid-cols-2 sm:grid-cols-4 gap-2">'
@@ -2444,7 +2730,7 @@ function renderStudentList(){
 const el=document.getElementById('studentContent');if(!el)return;
 const canReg=canRegisterStudents();
 const roster=appStudentRoster.filter(s=>s.isActive!==false).sort((a,b)=>a.name.localeCompare(b.name));
-let h='<div class="bg-white rounded-xl border border-gray-100 overflow-hidden"><div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between flex-wrap gap-3"><div><h3 class="text-sm font-semibold text-gray-700">Student Register</h3><p class="text-[10px] text-gray-400">'+roster.length+' registered students &middot; the same records power the Student Portal</p></div><div class="flex items-center gap-2"><input type="text" id="stuSearch" placeholder="Search student, programme or email..." class="px-3 py-2 text-sm border border-gray-200 rounded-lg outline-none focus:border-blue-400 w-64" oninput="filterStu()">'+(canReg?'<button onclick="openStudentForm()" class="px-4 py-2 bg-emerald-600 text-white text-sm font-medium rounded-lg hover:bg-emerald-700 inline-flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>Register Student</button>':'')+'<button onclick="window.print()" class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 inline-flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18.75 7.131H5.25"/></svg>Print</button></div></div><div class="overflow-x-auto" style="max-height:calc(100vh - 420px)"><table class="w-full text-sm"><thead class="bg-gray-50 border-b border-gray-100"><tr><th class="text-left px-4 py-3 text-gray-600 text-xs uppercase font-semibold">#</th><th class="text-left px-4 py-3 text-gray-600 text-xs uppercase font-semibold">Student</th><th class="text-left px-4 py-3 text-gray-600 text-xs uppercase font-semibold">Programme</th><th class="text-left px-4 py-3 text-gray-600 text-xs uppercase font-semibold">Contact</th><th class="text-left px-4 py-3 text-gray-600 text-xs uppercase font-semibold">Portal</th><th class="text-center px-4 py-3 text-gray-600 text-xs uppercase font-semibold">Registers</th><th class="text-right px-4 py-3 text-gray-600 text-xs uppercase font-semibold">Action</th></tr></thead><tbody id="stuTB"></tbody></table></div></div>';el.innerHTML=h;filterStu()}
+let h='<div class="bg-white rounded-xl border border-gray-100 overflow-hidden"><div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between flex-wrap gap-3"><div><h3 class="text-sm font-semibold text-gray-700">Student Register</h3><p class="text-[10px] text-gray-400">'+roster.length+' registered students &middot; the same records power the Student Portal</p></div><div class="flex items-center gap-2"><input type="text" id="stuSearch" placeholder="Search student, programme or email..." class="px-3 py-2 text-sm border border-gray-200 rounded-lg outline-none focus:border-blue-400 w-64" oninput="filterStu()">'+(canReg?'<button onclick="openMergeDuplicates()" class="px-4 py-2 bg-amber-500 text-white text-sm font-medium rounded-lg hover:bg-amber-600">Merge Duplicates</button>':'')+(canReg?'<button onclick="openStudentForm()" class="px-4 py-2 bg-emerald-600 text-white text-sm font-medium rounded-lg hover:bg-emerald-700 inline-flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>Register Student</button>':'')+'<button onclick="window.print()" class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 inline-flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18.75 7.131H5.25"/></svg>Print</button></div></div><div class="overflow-x-auto" style="max-height:calc(100vh - 420px)"><table class="w-full text-sm"><thead class="bg-gray-50 border-b border-gray-100"><tr><th class="text-left px-4 py-3 text-gray-600 text-xs uppercase font-semibold">#</th><th class="text-left px-4 py-3 text-gray-600 text-xs uppercase font-semibold">Student</th><th class="text-left px-4 py-3 text-gray-600 text-xs uppercase font-semibold">Programme</th><th class="text-left px-4 py-3 text-gray-600 text-xs uppercase font-semibold">Contact</th><th class="text-left px-4 py-3 text-gray-600 text-xs uppercase font-semibold">Portal</th><th class="text-center px-4 py-3 text-gray-600 text-xs uppercase font-semibold">Registers</th><th class="text-right px-4 py-3 text-gray-600 text-xs uppercase font-semibold">Action</th></tr></thead><tbody id="stuTB"></tbody></table></div></div>';el.innerHTML=h;filterStu()}
 function studentInfo(name){
 const regs=appRegisters;
 const myRegs=regs.filter(r=>r.students.includes(name));
@@ -2505,9 +2791,18 @@ if(!name){alert('Please enter the student\'s full name.');return}
 if(!email){alert('Please enter an email address \u2014 this is what the student will use to log into the Student Portal.');return}
 const dupe=appStudentRoster.find(x=>x.id!==id&&String(x.email||'').toLowerCase()===email);
 if(dupe){alert('Another student already uses this email address.');return}
+if(idNumber){const idDupe=appStudentRoster.find(x=>x.id!==id&&String(x.idNumber||'').trim()===idNumber);if(idDupe){alert('Another student ('+idDupe.name+') already has this ID number.');return}}
+const nameDupe=appStudentRoster.find(x=>x.id!==id&&nameKey(x.name)===nameKey(name));
+if(nameDupe){
+// A legacy record (seeded from the attendance registers, no email yet) can be completed instead of duplicated.
+if(!id&&!nameDupe.email){
+if(!confirm('"'+nameDupe.name+'" is already on the register without contact details.\n\nUpdate that record with these details instead of creating a duplicate?'))return;
+id=nameDupe.id;
+}else{alert('A student named "'+nameDupe.name+'" already exists on the register.');return}
+}
 const idx=appStudentRoster.findIndex(x=>x.id===id);
 if(idx>=0){
-appStudentRoster[idx]={...appStudentRoster[idx],name,email,phone,idNumber,studentNumber,programmeId};
+appStudentRoster[idx]={...appStudentRoster[idx],name,email,phone,idNumber,studentNumber,programmeId,isActive:true};
 }else{
 appStudentRoster.push({id:uid(),name,email,phone,idNumber,studentNumber,programmeId,isActive:true,portalActivated:false,portalUid:null,dateRegistered:new Date().toISOString(),registeredBy:(currentUser&&currentUser.name)||'Unknown'});
 }
@@ -2518,6 +2813,81 @@ closeModal();
 if(currentPage==='students')renderStudentRegisters&&filterStu&&filterStu();
 if(currentPage==='students')renderStudentList();
 }
+
+// ---- Duplicate detection & merge ----
+function _lev(a,b){const m=a.length,n=b.length;if(!m)return n;if(!n)return m;let prev=Array.from({length:n+1},(_,j)=>j);for(let i=1;i<=m;i++){const cur=[i];for(let j=1;j<=n;j++)cur[j]=Math.min(prev[j]+1,cur[j-1]+1,prev[j-1]+(a[i-1]===b[j-1]?0:1));prev=cur}return prev[n]}
+function _similarNames(a,b){
+const ka=nameKey(a),kb=nameKey(b);if(ka===kb)return'exact';
+if(_lev(ka,kb)<=1)return'similar';
+const ta=ka.split(' '),tb=kb.split(' ');
+if(ta.length>1&&tb.length>1&&ta[ta.length-1]===tb[tb.length-1]){const fa=ta[0],fb=tb[0];if(Math.min(fa.length,fb.length)>=4&&(fa.startsWith(fb)||fb.startsWith(fa)))return'similar'}
+return null}
+function findStudentDuplicateGroups(){
+const list=appStudentRoster.filter(s=>s.isActive!==false);
+const parent=list.map((_,i)=>i),kinds=list.map(()=>new Set());
+const find=i=>parent[i]===i?i:(parent[i]=find(parent[i]));
+for(let i=0;i<list.length;i++)for(let j=i+1;j<list.length;j++){
+const a=list[i],b=list[j];let r=_similarNames(a.name,b.name);
+if(!r&&a.email&&b.email&&nameKey(a.email)===nameKey(b.email))r='exact';
+if(!r&&a.idNumber&&b.idNumber&&String(a.idNumber).trim()===String(b.idNumber).trim())r='exact';
+if(r){parent[find(i)]=find(j);kinds[i].add(r);kinds[j].add(r)}}
+const groups={};list.forEach((s,i)=>{const r=find(i);(groups[r]=groups[r]||{members:[],kinds:new Set()});groups[r].members.push(s);kinds[i].forEach(k=>groups[r].kinds.add(k))});
+return Object.values(groups).filter(g=>g.members.length>1).map(g=>({members:g.members,exact:!g.kinds.has('similar')}))}
+function _stuScore(s){return(s.portalActivated?8:0)+(s.email?4:0)+(s.idNumber?2:0)+(s.studentNumber?1:0)+(s.programmeId?1:0)}
+function openMergeDuplicates(){
+if(!canRegisterStudents()){alert('You do not have permission to merge students.');return}
+const groups=findStudentDuplicateGroups(),modal=document.getElementById('programmeModal');
+let h='<div class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between z-20"><div><h2 class="text-lg font-bold text-gray-900">Merge Duplicate Students</h2><p class="text-[10px] text-gray-400 uppercase font-bold tracking-wider">'+groups.length+' group'+(groups.length===1?'':'s')+' found</p></div><button onclick="closeModal()" class="p-2 rounded-lg hover:bg-gray-100"><svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12"/></svg></button></div><div class="p-6">';
+if(!groups.length)h+='<div class="p-8 text-center text-sm text-gray-400">No duplicate students found.</div>';
+groups.forEach((g,gi)=>{
+const best=g.members.slice().sort((a,b)=>_stuScore(b)-_stuScore(a))[0];
+h+='<div class="border border-gray-200 rounded-xl p-4 mb-4"><div class="mb-2"><span class="badge '+(g.exact?'badge-red':'badge-gray')+'">'+(g.exact?'Same name / email / ID':'Possible match - check before merging')+'</span></div><div class="text-[11px] text-gray-400 mb-2">Pick the record to KEEP. The others are merged into it and deleted.</div>';
+g.members.forEach(m=>{h+='<label class="flex items-start gap-3 p-2 rounded-lg hover:bg-gray-50 cursor-pointer"><input type="radio" name="keep'+gi+'" value="'+m.id+'" '+(m.id===best.id?'checked':'')+' class="mt-1"><div class="text-xs"><div class="font-semibold text-gray-900">'+UI.escapeHtml(m.name)+'</div><div class="text-gray-500">'+(m.email?UI.escapeHtml(m.email):'no email')+(m.studentNumber?' &middot; '+UI.escapeHtml(m.studentNumber):'')+(m.portalActivated?' &middot; portal active':'')+'</div></div></label>'});
+h+='<div class="flex justify-end mt-2"><button onclick="mergeStudentGroup('+gi+')" class="px-4 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-lg">Merge this group</button></div></div>'});
+const opts=appStudentRoster.filter(x=>x.isActive!==false).slice().sort((a,b)=>a.name.localeCompare(b.name)).map(x=>'<option value="'+x.id+'">'+UI.escapeHtml(x.name)+(x.email?' ('+UI.escapeHtml(x.email)+')':'')+'</option>').join('');
+h+='<div class="border border-blue-200 bg-blue-50/40 rounded-xl p-4"><div class="text-xs font-bold text-gray-700 mb-1">Merge two students manually</div><div class="text-[11px] text-gray-500 mb-3">Use this when the names are different but it is the same person.</div><div class="grid grid-cols-1 sm:grid-cols-2 gap-3"><label><span class="block text-[11px] font-semibold text-gray-600 mb-1">KEEP this student</span><select id="mmKeep" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white"><option value="">Select...</option>'+opts+'</select></label><label><span class="block text-[11px] font-semibold text-gray-600 mb-1">Merge into the kept student and DELETE</span><select id="mmOther" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white"><option value="">Select...</option>'+opts+'</select></label></div><div class="flex justify-end mt-3"><button onclick="mergeStudentManual()" class="px-4 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-lg">Merge these two</button></div></div>';
+h+='</div>';
+window._dupGroups=groups;
+document.getElementById('programmeModalContent').innerHTML=h;modal.classList.remove('hidden');document.body.style.overflow='hidden'}
+async function mergeStudentGroup(gi){
+const g=(window._dupGroups||[])[gi];if(!g)return;
+const keepId=(document.querySelector('input[name="keep'+gi+'"]:checked')||{}).value;if(!keepId)return;
+await mergeStudentsCore(keepId,g.members.filter(m=>m.id!==keepId).map(m=>m.id))}
+async function mergeStudentManual(){
+const keepId=document.getElementById('mmKeep').value,otherId=document.getElementById('mmOther').value;
+if(!keepId||!otherId){alert('Choose both students.');return}
+if(keepId===otherId){alert('Pick two different students.');return}
+await mergeStudentsCore(keepId,[otherId])}
+async function mergeStudentsCore(keepId,otherIds){
+const keep=appStudentRoster.find(s=>s.id===keepId),others=otherIds.map(id=>appStudentRoster.find(s=>s.id===id)).filter(Boolean);
+if(!keep||!others.length)return;
+if(!confirm('Merge '+others.map(o=>'"'+o.name+'"').join(', ')+' into "'+keep.name+'"?\n\nThis cannot be undone.'))return;
+const fs=typeof FirebaseService!=='undefined'&&FirebaseService.isReady();
+const nameMap=new Set(others.map(o=>o.name));
+['email','phone','idNumber','studentNumber','programmeId','dateRegistered'].forEach(f=>{if(!keep[f]){const src=others.find(o=>o[f]);if(src)keep[f]=src[f]}});
+if(!keep.portalActivated){const src=others.find(o=>o.portalActivated);if(src){keep.portalActivated=true;keep.portalUid=src.portalUid||null}}
+let regsChanged=false;
+appRegisters.forEach(r=>{
+const fix=arr=>{let ch=false;const out=[];(arr||[]).forEach(n=>{const x=nameMap.has(n)?keep.name:n;if(x!==n)ch=true;if(!out.includes(x))out.push(x)});return{out,ch}};
+const a=fix(r.students);if(a.ch){r.students=a.out;regsChanged=true}
+(r.placements||[]).forEach(p=>{const b=fix(p.students);if(b.ch){p.students=b.out;regsChanged=true}})});
+const attChanged=[];
+appClassAttendance.forEach(r=>{let ch=false;(r.marks||[]).forEach(m=>{if(nameMap.has(m.student)){m.student=keep.name;ch=true}});if(ch)attChanged.push(r)});
+const idSet=new Set(others.map(o=>o.id));
+const refCols=[[appResults,'RESULTS'],[appFeeLedger,'FEELEDGER'],[appDocuments,'DOCUMENTS'],[appRequests,'REQUESTS'],[appLmsProgress,'LMSPROGRESS']];
+const refChanged=[];
+refCols.forEach(([arr,col])=>arr.forEach(r=>{if(r.studentId&&idSet.has(r.studentId)){r.studentId=keepId;refChanged.push([col,r])}}));
+appStudentRoster=appStudentRoster.filter(s=>!idSet.has(s.id));
+if(fs){try{
+await FirebaseService.upsertDoc(FirebaseService.COL.STUDENTS,keepId,keep);
+for(const o of others)await FirebaseService.deleteDoc(FirebaseService.COL.STUDENTS,o.id);
+if(regsChanged)await FirebaseService.saveCollection(FirebaseService.COL.REG,appRegisters);
+for(const r of attChanged)await FirebaseService.upsertDoc(FirebaseService.COL.ATTEND,r.id,r);
+for(const [col,r] of refChanged)await FirebaseService.upsertDoc(FirebaseService.COL[col],r.id,{studentId:keepId});
+}catch(e){console.warn('Merge sync failed:',e.message);alert('Merged locally, but cloud sync failed: '+e.message)}}
+if(typeof refreshGlobalState==='function')refreshGlobalState();
+if(currentPage==='students')renderStudentList();
+openMergeDuplicates()}
 async function deactivateStudent(id){
 if(!canRegisterStudents())return;
 if(!confirm('Remove this student from the active register? Their historical attendance and register records are kept.'))return;
@@ -2690,6 +3060,26 @@ tasks:[],
 posters:[]
 };
 function marketingStorageKey(){return 'atce_marketing_master'}
+// ---- Online registration portal -> Leads bridge ----
+// Applications submitted on register.html land in Firestore "newApplications";
+// they are merged (read-only, never duplicated) into the Leads & Enquiries views.
+let onlineApplications=[];
+function getAllLeads(){
+const own=marketingData.leads||[];
+const online=onlineApplications.map(a=>{
+let d='';try{const t=a.submittedAt&&a.submittedAt.toDate?a.submittedAt.toDate():(a.submittedAt?new Date(a.submittedAt):null);if(t&&!isNaN(t))d=t.toISOString().slice(0,10)}catch(e){}
+const st=String(a.status||'submitted').toLowerCase();
+return{name:a.fullName||'(no name)',contact:[a.phone,a.email].filter(Boolean).join(' / '),programme:a.programme||'',source:'Online Registration ('+(a.refNo||a.id)+')',status:st==='submitted'?'New':(st.charAt(0).toUpperCase()+st.slice(1)),date:d,_online:true,campus:a.campus,intake:a.intake,refNo:a.refNo||a.id};
+});
+return online.concat(own);
+}
+function startOnlineApplicationsWatch(){
+if(window.__onlineAppsWatch)return;window.__onlineAppsWatch=true;
+FirebaseService.watchCollection('newApplications',function(list){
+if(!list)return;onlineApplications=list;
+if(currentPage==='marketing')renderPage('marketing');
+});
+}
 function loadMarketingData(){
 try{const raw=localStorage.getItem(marketingStorageKey());if(raw){const parsed=JSON.parse(raw);marketingData={campaigns:parsed.campaigns||[],leads:parsed.leads||[],social:parsed.social||[],content:parsed.content||[],promotions:parsed.promotions||[],calendar:parsed.calendar||[],advertising:parsed.advertising||[],events:parsed.events||[],tasks:parsed.tasks||[],posters:parsed.posters||[]}}}catch(e){}
 }
@@ -2747,7 +3137,7 @@ return;
 }
 
 function renderEnquiryOverview(el,edit){
-const leads=marketingData.leads||[];
+const leads=getAllLeads();
 const counts=appProgrammes.filter(p=>!p.isArchived).map(p=>({programme:p.programme,saqaId:p.saqaId,count:leads.filter(l=>l.programme===p.programme).length}));
 const ranked=counts.slice().sort((a,b)=>b.count-a.count||a.programme.localeCompare(b.programme));
 const programmesWithEnquiries=counts.filter(x=>x.count>0).length;
@@ -2808,7 +3198,7 @@ marketingData.campaigns.map(x=>'<tr class="border-b border-gray-50"><td class="p
 else if(marketingTab==='leads'){
 h+='<div class="flex items-center justify-between gap-3 mb-4"><div><h3 class="text-sm font-semibold text-gray-700">Student Enquiries</h3><p class="text-[10px] text-gray-400">Capture programme interest to identify popular courses</p></div>'+(edit?'<button onclick="openMarketingFromOverview()" class="px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded-lg">Capture Enquiry</button>':'')+'</div>';
 h+=marketingTable(['Name','Contact','Programme Interest','Source','Status','Date'],
-marketingData.leads.map(x=>'<tr class="border-b border-gray-50"><td class="px-4 py-3 font-medium text-gray-900">'+UI.escapeHtml(x.name)+'</td><td class="px-4 py-3 text-xs text-gray-600">'+UI.escapeHtml(x.contact)+'</td><td class="px-4 py-3 text-xs text-gray-700">'+UI.escapeHtml(x.programme)+'</td><td class="px-4 py-3 text-xs text-gray-600">'+UI.escapeHtml(x.source)+'</td><td class="px-4 py-3">'+badgeFor(x.status)+'</td><td class="px-4 py-3 text-xs font-mono text-gray-600">'+UI.escapeHtml(x.date)+'</td></tr>'),
+getAllLeads().map(x=>'<tr class="border-b border-gray-50"><td class="px-4 py-3 font-medium text-gray-900">'+UI.escapeHtml(x.name)+'</td><td class="px-4 py-3 text-xs text-gray-600">'+UI.escapeHtml(x.contact)+'</td><td class="px-4 py-3 text-xs text-gray-700">'+UI.escapeHtml(x.programme)+'</td><td class="px-4 py-3 text-xs text-gray-600">'+UI.escapeHtml(x.source)+'</td><td class="px-4 py-3">'+badgeFor(x.status)+'</td><td class="px-4 py-3 text-xs font-mono text-gray-600">'+UI.escapeHtml(x.date)+'</td></tr>'),
 'No leads or enquiries have been captured yet.');
 }
 else if(marketingTab==='social'){
@@ -2853,8 +3243,8 @@ marketingData.tasks.map(x=>'<tr class="border-b border-gray-50"><td class="px-4 
 }
 else if(marketingTab==='reports'){
 const activeCampaigns=marketingData.campaigns.filter(x=>['active','live'].includes(String(x.status).toLowerCase())).length;
-const totalLeads=marketingData.leads.length;
-const convertedLeads=marketingData.leads.filter(x=>['converted','enrolled','completed'].includes(String(x.status).toLowerCase())).length;
+const totalLeads=getAllLeads().length;
+const convertedLeads=getAllLeads().filter(x=>['converted','enrolled','completed'].includes(String(x.status).toLowerCase())).length;
 const conversionRate=totalLeads?Math.round((convertedLeads/totalLeads)*100):0;
 const totalAdSpend=marketingData.advertising.reduce((s,x)=>s+Number(x.spend||0),0);
 h+='<div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">';
@@ -2879,7 +3269,7 @@ chartInstances.mktA=new Chart(aCtx,{type:'doughnut',data:{labels:Object.keys(cou
 
 // Charts for reports tab
 const lsCtx=document.getElementById('chartLeadSource');
-if(lsCtx){const src={};marketingData.leads.forEach(l=>{const k=l.source||'Unspecified';src[k]=(src[k]||0)+1});
+if(lsCtx){const src={};getAllLeads().forEach(l=>{const k=String(l.source||'Unspecified').replace(/ \(.*\)$/,'');src[k]=(src[k]||0)+1});
 chartInstances.leadSrc=new Chart(lsCtx,{type:'bar',data:{labels:Object.keys(src),datasets:[{label:'Leads',data:Object.values(src),backgroundColor:'#3b82f6',borderRadius:6,borderSkipped:false,barThickness:26}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{grid:{color:'#f1f5f9'},border:{display:false},ticks:{color:'#94a3b8',font:{size:10},stepSize:1}},x:{grid:{display:false},border:{display:false},ticks:{color:'#334155',font:{size:10}}}}}})}
 const csCtx=document.getElementById('chartCampaignStatus');
 if(csCtx){const st={};marketingData.campaigns.forEach(c=>{const k=c.status||'Unspecified';st[k]=(st[k]||0)+1});
@@ -3082,7 +3472,7 @@ function masterActionButton(fn,title){return '<button onclick="'+fn+'" title="'+
 
 function renderMasterProgrammes(){
 const el=document.getElementById('masterControlContent');if(!el)return;const edit=canEditSystem();
-let h='<div class="bg-white rounded-xl border border-gray-100 overflow-hidden"><div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between gap-3"><div><h3 class="text-sm font-semibold text-gray-800">Programme Master Records</h3><p class="text-[10px] text-gray-400">'+appProgrammes.length+' total records</p></div>'+(edit?'<button onclick="openMasterForm()" class="px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded-lg inline-flex items-center gap-2">'+iconSet.plus+'Add Programme</button>':'')+'</div><div class="overflow-x-auto"><table class="w-full text-sm"><thead class="bg-gray-50"><tr><th class="text-left px-4 py-3 text-[10px] uppercase text-gray-600">Programme</th><th class="text-left px-4 py-3 text-[10px] uppercase text-gray-600">Site</th><th class="text-left px-4 py-3 text-[10px] uppercase text-gray-600">Accreditation</th><th class="text-left px-4 py-3 text-[10px] uppercase text-gray-600">Status</th><th class="text-right px-4 py-3 text-[10px] uppercase text-gray-600">Action</th></tr></thead><tbody>';
+let h='<div class="bg-white rounded-xl border border-gray-100 overflow-hidden"><div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between gap-3"><div><h3 class="text-sm font-semibold text-gray-800">Programme Master Records</h3><p class="text-[10px] text-gray-400">'+appProgrammes.length+' total records</p></div>'+(edit?'<div class="flex items-center gap-2">'+(_dupPlan().length?'<button onclick="cleanupDuplicateData()" class="px-4 py-2 bg-amber-500 text-white text-xs font-bold rounded-lg">Clean up duplicates</button>':'')+'<button onclick="openMasterForm()" class="px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded-lg inline-flex items-center gap-2">'+iconSet.plus+'Add Programme</button></div>':'')+'</div><div class="overflow-x-auto"><table class="w-full text-sm"><thead class="bg-gray-50"><tr><th class="text-left px-4 py-3 text-[10px] uppercase text-gray-600">Programme</th><th class="text-left px-4 py-3 text-[10px] uppercase text-gray-600">Site</th><th class="text-left px-4 py-3 text-[10px] uppercase text-gray-600">Accreditation</th><th class="text-left px-4 py-3 text-[10px] uppercase text-gray-600">Status</th><th class="text-right px-4 py-3 text-[10px] uppercase text-gray-600">Action</th></tr></thead><tbody>';
 h+=appProgrammes.map(p=>'<tr class="border-b border-gray-50"><td class="px-4 py-3 font-medium text-gray-900">'+UI.escapeHtml(p.programme)+'</td><td class="px-4 py-3 text-xs text-gray-600">'+UI.formatValue(p.venue)+'</td><td class="px-4 py-3">'+UI.accreditationBadge(p.accreditationStatus)+'</td><td class="px-4 py-3">'+UI.statusBadge(p.allocationStatus)+'</td><td class="px-4 py-3 text-right">'+(edit?masterActionButton("openMasterForm('"+p.id+"')",'Edit programme'):'<span class="text-[10px] text-gray-400">View only</span>')+'</td></tr>').join('');
 h+='</tbody></table></div></div>';
 el.innerHTML=h;
@@ -3169,7 +3559,7 @@ function renderPortalAnnouncements(){
 const el=document.getElementById('portalSubContent');if(!el)return;
 const list=[...appAnnouncements].sort((a,b)=>(b.createdAt||'').localeCompare(a.createdAt||''));
 let h='<div class="bg-white rounded-xl border border-gray-100 overflow-hidden"><div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between"><div><h3 class="text-sm font-semibold text-gray-700">Announcements</h3><p class="text-[10px] text-gray-400">Posted to all students on the Student Portal</p></div><button onclick="openAnnouncementForm()" class="px-4 py-2 bg-emerald-600 text-white text-sm font-medium rounded-lg hover:bg-emerald-700 inline-flex items-center gap-2">'+iconSet.plus+'New Announcement</button></div>';
-h+=list.length?'<div class="divide-y divide-gray-50">'+list.map(a=>'<div class="p-4 flex items-start justify-between gap-3"><div><div class="font-semibold text-gray-900 text-sm">'+UI.escapeHtml(a.title)+'</div><p class="text-sm text-gray-600 mt-1">'+UI.escapeHtml(a.body)+'</p><div class="text-[10px] text-gray-400 mt-2">'+(a.createdAt?new Date(a.createdAt).toLocaleString():'')+' &middot; '+UI.escapeHtml(a.postedBy||'Staff')+'</div></div><button onclick="deleteAnnouncement(\''+a.id+'\')" class="shrink-0 p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button></div>').join('')+'</div>':'<div class="p-10 text-center text-sm text-gray-400">No announcements posted yet.</div>';
+h+=list.length?'<div class="divide-y divide-gray-50">'+list.map(a=>'<div class="p-4 flex items-start justify-between gap-3"><div><div class="font-semibold text-gray-900 text-sm">'+UI.escapeHtml(a.title)+'</div><p class="text-sm text-gray-600 mt-1">'+UI.escapeHtml(a.body)+'</p><div class="text-[10px] text-gray-400 mt-2">'+(a.createdAt?new Date(a.createdAt).toLocaleString():'')+' &middot; '+UI.escapeHtml(a.postedBy||'Staff')+announceBadges(a)+'</div></div><button onclick="deleteAnnouncement(\''+a.id+'\')" class="shrink-0 p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button></div>').join('')+'</div>':'<div class="p-10 text-center text-sm text-gray-400">No announcements posted yet.</div>';
 h+='</div>';
 el.innerHTML=h;
 }
@@ -3187,15 +3577,16 @@ const title=(document.getElementById('anTitle').value||'').trim();
 const body=(document.getElementById('anBody').value||'').trim();
 const audience=document.getElementById('anAudience').value||'students';
 if(!title||!body){alert('Please complete both fields.');return}
-appAnnouncements.push({id:uid(),title,body,audience,postedBy:(currentUser&&currentUser.name)||'Staff',createdAt:new Date().toISOString()});
+appAnnouncements.push({id:uid(),title,body,audience,postedBy:(currentUser&&currentUser.name)||'Staff',postedByEmail:String((currentUser&&currentUser.email)||'').toLowerCase(),source:'dashboard',createdAt:new Date().toISOString()});
 await saveCol('ANNOUNCEMENTS',appAnnouncements);
-closeModal();renderMasterPortal();
+closeModal();refreshAnnouncementViews();
 }
 async function deleteAnnouncement(id){
 if(!confirm('Delete this announcement?'))return;
 appAnnouncements=appAnnouncements.filter(x=>x.id!==id);
-await saveCol('ANNOUNCEMENTS',appAnnouncements);
-renderMasterPortal();
+// remove it from Firestore too, otherwise it reappears for students and staff on the next load
+if(typeof FirebaseService!=='undefined'&&FirebaseService.isReady())await FirebaseService.deleteDoc(FirebaseService.COL.ANNOUNCEMENTS,id);
+refreshAnnouncementViews();
 }
 // Results
 function renderPortalResults(){
@@ -3499,7 +3890,7 @@ const hosts=(d.hostsRaw||'').split(',').map(s=>s.trim()).filter(Boolean);
 const rec={id:id||uid(),month:d.month,title:d.title,type:d.type,programme:d.programme,periods:periods,hours:(d.hours||'').trim(),notes:(d.notes||'').trim(),students:students,hosts:hosts};
 if(d.type==='Workplace Register'&&hosts.length)rec.placements=hosts.map(h=>({host:h,students:students}));
 if(id){const i=appRegisters.findIndex(r=>r.id===id);appRegisters[i]={...appRegisters[i],...rec}}else{appRegisters.push(rec)}
-students.forEach(n=>{if(!appStudentRoster.some(s=>s.name===n))appStudentRoster.push({id:uid(),name:n,isActive:true})});
+students.forEach(n=>{if(!appStudentRoster.some(s=>nameKey(s.name)===nameKey(n)))appStudentRoster.push({id:seedStudentId(n),name:n,isActive:true})});
 FirebaseService.saveCollection(FirebaseService.COL.REG,appRegisters);
 FirebaseService.saveCollection(FirebaseService.COL.STUDENTS,appStudentRoster);
 closeMasterDataModal();renderPage('management');
@@ -3508,7 +3899,7 @@ closeMasterDataModal();renderPage('management');
 function saveStudentMaster(id){
 if(!canRegisterStudents()){alert('You do not have permission to register or edit students.');return}
 const f=document.getElementById('studentMasterForm'),d=Object.fromEntries(new FormData(f).entries());d.name=(d.name||'').trim();if(!d.name){alert('Student name is required.');return}d.isActive=!!f.elements.isActive.checked;
-if(appStudentRoster.some(s=>s.id!==id&&s.name.toLowerCase()===d.name.toLowerCase())){alert('A student with this name already exists.');return}
+if(appStudentRoster.some(s=>s.id!==id&&nameKey(s.name)===nameKey(d.name))){alert('A student with this name already exists.');return}
 if(id){const i=appStudentRoster.findIndex(s=>s.id===id),old=appStudentRoster[i];appStudentRoster[i]={...old,...d};if(old.name!==d.name){appRegisters.forEach(r=>{r.students=(r.students||[]).map(n=>n===old.name?d.name:n);(r.placements||[]).forEach(p=>p.students=(p.students||[]).map(n=>n===old.name?d.name:n))});FirebaseService.saveCollection(FirebaseService.COL.REG,appRegisters)}FirebaseService.upsertDoc(FirebaseService.COL.STUDENTS,id,appStudentRoster[i]);}
 else{const rec={...d,id:uid()};appStudentRoster.push(rec);FirebaseService.upsertDoc(FirebaseService.COL.STUDENTS,rec.id,rec)}
 closeMasterDataModal();renderPage('management');
