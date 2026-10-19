@@ -5260,6 +5260,8 @@ document.addEventListener('keydown',e=>{
   const RTC_CONFIG = {
     server: {},   // optional self-hosted PeerJS server, e.g. { host:'peer.yourdomain.com', port:443, path:'/', secure:true }
     iceServers: [
+      { urls: 'stun:stun.relay.metered.ca:80' },
+      { urls: ['turn:global.relay.metered.ca:80', 'turn:global.relay.metered.ca:80?transport=tcp', 'turn:global.relay.metered.ca:443', 'turns:global.relay.metered.ca:443?transport=tcp'], username: 'ab8d657a3eabfdcb17a18e3f', credential: 'qD1m4Cvogk6y+7Xl' },
       { urls: 'stun:stun.l.google.com:19302' },
       { urls: 'stun:stun1.l.google.com:19302' },
       { urls: 'stun:stun.cloudflare.com:3478' },
@@ -5911,6 +5913,7 @@ window.q24Toast=function(m,o){o=o||{};var d=document.createElement('div');d.styl
       P.n = d.n; P.mic = d.mic; P.cam = d.cam; P.hand = d.hand; M.people.add(d.n); upd(id);
       if (M.isHost) { const list = Object.keys(M.conns).filter(x => x !== id); say(c, { t: 'peers', list }); }
       sys(d.n + ' joined');
+      [5000, 12000].forEach(ms => setTimeout(() => { try { if (!M || !M.conns[id] || $('t_' + id)) return; wireCall(M.peer.call(id, M.stream)); } catch (e) {} }, ms));
     } else if (d.t === 'peers') {
       d.list.concat(c.peer === pid(M.code) + 'h' ? [c.peer] : []).forEach(x => { if (x === M.myId || M.calls[x]) return; if (x !== c.peer) wireConn(M.peer.connect(x, { reliable: true })); wireCall(M.peer.call(x, M.stream)); });
     } else if (d.t === 'chat') { msg(d.n, d.m, d.at); }
@@ -5920,6 +5923,7 @@ window.q24Toast=function(m,o){o=o||{};var d=document.createElement('div');d.styl
   }
   function wireCall(c) {
     M.calls[c.peer] = c;
+    try { const pc = c.peerConnection; if (pc) pc.addEventListener('iceconnectionstatechange', () => { if (pc.iceConnectionState === 'failed') { try { pc.restartIce(); } catch (e) {} toast('Connection to ' + ((M.peers[c.peer] || {}).n || 'a participant') + ' is weak — retrying…'); } }); } catch (e) {}
     c.on('stream', s => { const P = M.peers[c.peer] || (M.peers[c.peer] = {}); addTile(c.peer, P.n || 'Participant', s, false); watchSpeak(c.peer, s); });
     c.on('close', () => drop(c.peer)); c.on('error', () => {});
   }
@@ -5928,7 +5932,8 @@ window.q24Toast=function(m,o){o=o||{};var d=document.createElement('div');d.styl
   /* tiles / people */
   function addTile(id, name, stream, self) {
     let t = $('t_' + id); if (!t) { t = document.createElement('div'); t.id = 't_' + id; t.className = 'qm-tile'; t.innerHTML = '<video autoplay playsinline' + (self ? ' muted' : '') + '></video><div class="qm-av"><span></span></div><div class="qm-nm"></div>'; $('qmGrid').appendChild(t); }
-    t.querySelector('video').srcObject = stream; t.querySelector('.qm-av span').textContent = (name || '?').trim()[0].toUpperCase(); t.querySelector('.qm-nm').textContent = name;
+    { const v = t.querySelector('video'); v.srcObject = stream; v.muted = !!self; v.playsInline = true; const go = () => { const r = v.play(); if (r && r.catch) r.catch(() => { const f = () => { v.play().catch(() => {}); document.removeEventListener('click', f); document.removeEventListener('touchstart', f); }; document.addEventListener('click', f); document.addEventListener('touchstart', f); }); }; go(); }
+    t.querySelector('.qm-av span').textContent = (name || '?').trim()[0].toUpperCase(); t.querySelector('.qm-nm').textContent = name;
     if (self) t.dataset.self = 1; people(); upd(id);
   }
   function upd(id) {
