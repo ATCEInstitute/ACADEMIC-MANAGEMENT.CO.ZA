@@ -203,7 +203,181 @@ return ce.apply(console,arguments)};
             .login-panel { padding-top: 1.15rem; padding-bottom: 1.15rem; }
             .login-panel h2 { margin-bottom: 1rem; }
         }
-    </style>
+    /* ===== 24S CONNECT ===== */
+        .cx-i{width:20px;height:20px;flex-shrink:0}.cx-i--sm{width:13px;height:13px}.cx-i--lg{width:34px;height:34px}.cx-i--xl{width:44px;height:44px}
+        .cx-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
+        .cx-sub{font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#64748b;margin-top:4px}
+        .cx-live{display:inline-flex;align-items:center;gap:8px;font-size:10px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#0a7d49;background:#e8fbf1;border:1px solid #b7efd2;padding:7px 12px;border-radius:999px}
+        .cx-live i{width:8px;height:8px;border-radius:50%;background:#10b981;box-shadow:0 0 0 0 rgba(16,185,129,.6);animation:cxPing 1.8s infinite}
+        @keyframes cxPing{70%{box-shadow:0 0 0 9px rgba(16,185,129,0)}100%{box-shadow:0 0 0 0 rgba(16,185,129,0)}}
+
+        .cx-hero{position:relative;overflow:hidden;border-radius:1.4rem;padding:1.6rem 1.7rem;color:#fff;
+            background:radial-gradient(520px 260px at 100% 0%,rgba(96,165,250,.55),transparent 65%),linear-gradient(135deg,#0b2a6f 0%,#1d4ed8 55%,#2563eb 100%);
+            box-shadow:0 24px 44px -22px rgba(29,78,216,.75)}
+        .cx-hero-body{position:relative;z-index:1}
+        .cx-chip{display:inline-flex;align-items:center;gap:7px;font-size:10px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);padding:6px 11px;border-radius:999px;color:#fff}
+        .cx-chip .cx-i{width:13px;height:13px}
+        .cx-job{font-size:1.9rem;line-height:1.1;font-weight:900;text-transform:uppercase;letter-spacing:-.02em;margin:.8rem 0 .25rem;color:#fff !important;-webkit-text-fill-color:#fff !important;background:none !important}
+        .cx-site{font-size:.9rem;color:rgba(255,255,255,.82) !important}
+        .cx-rings{position:absolute;right:-60px;top:50%;width:230px;height:230px;transform:translateY(-50%);pointer-events:none}
+        .cx-rings span{position:absolute;inset:0;border-radius:50%;border:1.5px solid rgba(255,255,255,.28);animation:cxRing 4.2s ease-out infinite}
+        .cx-rings span:nth-child(2){animation-delay:1.4s}.cx-rings span:nth-child(3){animation-delay:2.8s}
+        @keyframes cxRing{0%{transform:scale(.35);opacity:.9}100%{transform:scale(1.15);opacity:0}}
+
+        .cx-actions{display:grid;grid-template-columns:1fr;gap:1rem}
+        @media(min-width:768px){.cx-actions{grid-template-columns:1fr 1fr}}
+        .cx-action{position:relative;text-align:left;border-radius:1.3rem;padding:1.5rem 1.5rem 1.4rem;background:#fff;border:1.5px solid rgba(37,99,235,.28);
+            box-shadow:0 10px 30px -16px rgba(37,99,235,.4);cursor:pointer;display:flex;flex-direction:column;gap:.15rem;
+            transition:transform .2s ease,box-shadow .25s ease,border-color .2s ease}
+        .cx-action:hover{transform:translateY(-4px);border-color:#2563eb;box-shadow:0 22px 40px -16px rgba(37,99,235,.55)}
+        .cx-action:active{transform:translateY(-1px) scale(.99)}
+        .cx-ico{width:54px;height:54px;border-radius:1rem;display:flex;align-items:center;justify-content:center;margin-bottom:.9rem;color:#fff;
+            background:linear-gradient(135deg,#1d4ed8,#60a5fa);box-shadow:0 10px 18px -8px rgba(37,99,235,.7),inset 0 1px 0 rgba(255,255,255,.35);transition:transform .25s ease}
+        .cx-ico .cx-i{width:24px;height:24px}
+        .cx-action:hover .cx-ico{transform:rotate(-6deg) scale(1.08)}
+        .cx-act-t{font-size:1.15rem;font-weight:900;text-transform:uppercase;letter-spacing:-.01em;color:#0b2a6f}
+        .cx-act-s{font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#64748b}
+        .cx-go{position:absolute;right:1.1rem;top:1.1rem;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#e6f0ff;color:#2563eb;transition:transform .2s ease,background .2s ease,color .2s ease}
+        .cx-go .cx-i{width:16px;height:16px}
+        .cx-action:hover .cx-go{transform:translateX(4px);background:#2563eb;color:#fff}
+        .cx-action--pri{background:linear-gradient(135deg,#1d4ed8 0%,#2563eb 60%,#3b82f6 100%);border-color:#1d4ed8;color:#fff}
+        .cx-action--pri .cx-act-t{color:#fff}.cx-action--pri .cx-act-s{color:rgba(255,255,255,.8)}
+        .cx-action--pri .cx-ico{background:rgba(255,255,255,.2);box-shadow:inset 0 1px 0 rgba(255,255,255,.4)}
+        .cx-action--pri .cx-go{background:rgba(255,255,255,.2);color:#fff}
+        .cx-action--pri:hover .cx-go{background:#fff;color:#2563eb}
+
+        .cx-tiles{display:grid;grid-template-columns:1fr;gap:.75rem}
+        @media(min-width:768px){.cx-tiles{grid-template-columns:repeat(3,1fr)}}
+        .cx-tile{display:flex;gap:.8rem;align-items:flex-start;padding:1rem 1.1rem;border-radius:1rem;background:linear-gradient(180deg,#fff,#f3f8ff);border:1px solid rgba(37,99,235,.2)}
+        .cx-tile .cx-i{color:#2563eb;margin-top:2px}
+        .cx-tile b{display:block;font-size:11px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:#0b2a6f}
+        .cx-tile span{display:block;font-size:11px;line-height:1.35;color:#64748b;margin-top:2px}
+
+        .cx-card{border-radius:1.3rem;padding:1.3rem 1.4rem;background:#fff;border:1.5px solid rgba(37,99,235,.22);box-shadow:0 10px 30px -18px rgba(37,99,235,.35)}
+        .cx-card-h{display:flex;align-items:center;gap:.55rem;margin-bottom:1rem;color:#2563eb}
+        .cx-card-h h4{font-size:11px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:#0b2a6f}
+        .cx-empty{display:flex;flex-direction:column;align-items:center;text-align:center;gap:.25rem;padding:1.2rem 0 .6rem;color:#93b4ea}
+        .cx-empty p{font-size:12px;font-weight:800;color:#475569;font-style:normal}
+        .cx-empty span{font-size:11px;color:#94a3b8}
+
+        /* ---- Call modal ---- */
+        #callModal{background:rgba(7,22,58,.78);backdrop-filter:blur(6px)}
+        .cx-call{background:linear-gradient(180deg,#0b1f4d 0%,#0a1a3f 100%) !important;border:1px solid rgba(96,165,250,.35) !important;border-radius:1.6rem;box-shadow:0 40px 90px -20px rgba(0,0,0,.65) !important}
+        .cx-stage{position:relative;width:100%;aspect-ratio:16/10;display:flex;align-items:center;justify-content:center;overflow:hidden;
+            background:radial-gradient(420px 280px at 50% 42%,rgba(59,130,246,.38),transparent 70%),linear-gradient(160deg,#0f2a6b,#091636)}
+        .cx-rv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+        .cx-ph{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:1.1rem}
+        .cx-avatar{position:relative;width:96px;height:96px}
+        .cx-avatar i{position:absolute;inset:0;border-radius:50%;border:1.5px solid rgba(147,197,253,.55);animation:cxRing 3.2s ease-out infinite}
+        .cx-avatar i:nth-child(2){animation-delay:1.07s}.cx-avatar i:nth-child(3){animation-delay:2.14s}
+        .cx-av-core{position:absolute;inset:0;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;background:linear-gradient(135deg,#2563eb,#60a5fa);box-shadow:0 14px 34px -8px rgba(37,99,235,.9),inset 0 1px 0 rgba(255,255,255,.4)}
+        .cx-ph-t{font-size:10px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:rgba(219,234,254,.85)}
+        .cx-top{position:absolute;top:0;left:0;right:0;z-index:2;display:flex;justify-content:space-between;align-items:center;padding:.8rem .9rem;background:linear-gradient(180deg,rgba(5,14,38,.6),transparent)}
+        .cx-pill{display:inline-flex;align-items:center;gap:6px;font-size:9px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#dbeafe;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);padding:6px 10px;border-radius:999px;backdrop-filter:blur(6px)}
+        .cx-timer{font-variant-numeric:tabular-nums;letter-spacing:.08em;font-size:11px}
+        .cx-self{position:absolute;z-index:3;right:.8rem;bottom:.8rem;width:104px;aspect-ratio:4/3;border-radius:.8rem;overflow:hidden;background:#000;border:2px solid rgba(255,255,255,.55);box-shadow:0 10px 24px -8px rgba(0,0,0,.7)}
+        .cx-self.hidden{display:none}
+        .cx-panel{padding:1.2rem 1.3rem 1.5rem;display:flex;flex-direction:column;gap:1rem}
+        .cx-ctx{display:flex;gap:.8rem;align-items:center;padding:.85rem 1rem;border-radius:1rem;background:rgba(255,255,255,.07);border:1px solid rgba(147,197,253,.22)}
+        .cx-ctx-ico{width:40px;height:40px;border-radius:.8rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;background:linear-gradient(135deg,#1d4ed8,#60a5fa)}
+        .cx-ctx-k{font-size:9px;font-weight:900;letter-spacing:.18em;text-transform:uppercase;color:#93c5fd}
+        .cx-ctx-t{font-size:1.05rem;font-weight:900;text-transform:uppercase;color:#fff !important;-webkit-text-fill-color:#fff}
+        .cx-ctx-s{font-size:12px;color:rgba(219,234,254,.75) !important;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+        .cx-status{text-align:center}
+        .cx-status span{display:inline-flex;align-items:center;gap:8px;font-size:10px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;padding:7px 14px;border-radius:999px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:#bfdbfe !important}
+        .cx-status span::before{content:"";width:8px;height:8px;border-radius:50%;background:#60a5fa;animation:cxBlink 1.2s infinite}
+        .cx-status span.ok{color:#86efac !important;border-color:rgba(134,239,172,.4);background:rgba(16,185,129,.14)}
+        .cx-status span.ok::before{background:#34d399;animation:none}
+        @keyframes cxBlink{50%{opacity:.25}}
+        .cx-ctls{display:flex;justify-content:center;align-items:flex-start;gap:1.6rem}
+        .cx-ctl-w{display:flex;flex-direction:column;align-items:center;gap:.45rem}
+        .cx-ctl-w>span{font-size:9px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:rgba(191,219,254,.75)}
+        .cx-ctl{width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);transition:transform .15s ease,background .2s ease}
+        .cx-ctl:hover{background:rgba(255,255,255,.2);transform:translateY(-2px)}
+        .cx-ctl .ic,.cx-ctl svg{color:#fff !important;width:22px;height:22px}
+        .cx-ctl.bg-\[\#ff3e3e\]{background:#fff !important;border-color:#fff}
+        .cx-ctl.bg-\[\#ff3e3e\] .ic,.cx-ctl.bg-\[\#ff3e3e\] svg{color:#dc2626 !important}
+        .cx-ctl--end{width:68px;height:68px;background:#dc2626 !important;border-color:#f87171;box-shadow:0 14px 28px -8px rgba(220,38,38,.75)}
+        .cx-ctl--end:hover{background:#ef4444 !important}
+.cx-modal{display:none;position:fixed;inset:0;z-index:900;align-items:center;justify-content:center;padding:1rem}
+.cx-modal.open{display:flex}
+.cx-call{width:100%;max-width:36rem;max-height:96vh;overflow:auto}
+.cx-call .ic{width:22px;height:22px;display:inline-block}
+#incomingCallAlert .ic{width:20px;height:20px}
+.cx-modal .cx-status span{color:#bfdbfe;border:1px solid rgba(147,197,253,.3);background:rgba(255,255,255,.08)}
+
+/* ===== 24S MEETINGS ===== */
+.cx-head h2{color:#1d4ed8 !important}
+#meetings::after{content:"";display:block;height:90px}
+#meetings .qm-fab{position:fixed;right:20px;bottom:calc(20px + env(safe-area-inset-bottom));z-index:900;width:60px;height:60px;border-radius:50%;border:0;display:flex;align-items:center;justify-content:center;color:#fff;cursor:pointer;background:linear-gradient(135deg,#1d4ed8,#3b82f6);box-shadow:0 14px 30px -8px rgba(37,99,235,.75);animation:qmFloat 3s ease-in-out infinite}
+#meetings .qm-fab::after{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid rgba(59,130,246,.6);animation:qmPulse 2s ease-out infinite}
+#meetings .qm-fab:hover{filter:brightness(1.1)}
+@keyframes qmFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes qmPulse{0%{transform:scale(1);opacity:.8}100%{transform:scale(1.6);opacity:0}}
+@media (prefers-reduced-motion:reduce){#meetings .qm-fab,#meetings .qm-fab::after{animation:none}}
+
+  .q24-card{background:#f3f4f6;border:1px solid rgba(0,0,0,.08);border-left:2px solid rgba(37, 99, 235,.5);border-radius:12px;padding:14px}
+  .q24-h{font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:#2563eb;margin-bottom:8px}
+  .q24-btn{border:1px solid rgba(37, 99, 235,.35);background:rgba(37, 99, 235,.08);color:#1d4ed8;border-radius:10px;padding:10px 6px;font-size:10px;font-weight:900;text-transform:uppercase;line-height:1.1;min-height:44px}
+  .q24-btn.on{background:#2563eb;border-color:#2563eb;color:#fff}
+  .q24-btn.done{background:rgba(10,159,90,.12);border-color:rgba(10,159,90,.5);color:#0a9f5a}
+  .q24-btn:active{transform:scale(.97)}
+  .q24-link{color:#2563eb;font-size:10px;font-weight:900;text-transform:uppercase}
+  .q24-warn{background:rgba(255,170,0,.1);border:1px solid rgba(255,170,0,.45);color:#8a5200;border-radius:12px;padding:12px;font-size:12px}
+  .q24-chip{display:inline-block;font-size:9px;font-weight:900;text-transform:uppercase;border-radius:999px;padding:2px 8px;background:rgba(0,0,0,.07);margin-right:4px}
+  .q24-in{width:100%;background:#fff;border:1px solid rgba(0,0,0,.2);border-radius:8px;padding:8px;font-size:12px;color:#111827}
+  .q24-lbl{font-size:9px;font-weight:900;text-transform:uppercase;color:rgba(17,24,39,.55);display:block;margin:6px 0 2px}
+.q24-ic{width:1.1em;height:1.1em;display:inline-block;vertical-align:-.2em;margin-right:.35em;flex-shrink:0}
+        /* ===== MEETINGS: caller-screen UI ===== */
+        #meetings{background:transparent !important;box-shadow:none !important;padding:0 !important;border-radius:0 !important}
+        #meetings .cx-job,#meetings .cx-hero h3{color:#fff !important;-webkit-text-fill-color:#fff !important;background:none !important}
+        #meetings .cx-site,#meetings .cx-chip{color:#fff !important}
+        #meetings .qm-hero-row{display:flex;flex-wrap:wrap;gap:.75rem;align-items:center;margin-top:1.1rem}
+        #meetings .qm-join{display:flex;gap:.5rem;flex:1;min-width:230px;max-width:420px}
+        #meetings .qm-hero .q24-in{background:rgba(255,255,255,.95) !important;border:0 !important;border-radius:999px !important;padding:12px 16px !important;font-size:13px;color:#0b2a6f !important}
+        #meetings .qm-hero .q24-btn,#meetings .qm-hero .q24-btn.on{background:#fff !important;color:#1d4ed8 !important;border:0 !important;border-radius:999px !important;padding:0 22px !important;min-height:44px;font-weight:900;box-shadow:0 10px 22px -10px rgba(0,0,0,.45)}
+        #meetings .qm-hero .qm-now{background:rgba(255,255,255,.18) !important;color:#fff !important;border:1px solid rgba(255,255,255,.45) !important;box-shadow:none !important}
+        #meetings .q24-card{background:#fff !important;border:1.5px solid rgba(37,99,235,.22) !important;border-radius:1.3rem !important;padding:1.2rem 1.35rem !important;box-shadow:0 10px 30px -18px rgba(37,99,235,.35)}
+        #meetings .q24-h{font-size:11px !important;letter-spacing:.16em !important;color:#0b2a6f !important}
+        #meetings .q24-in{border-radius:.8rem !important;border:1px solid rgba(37,99,235,.28) !important;padding:10px 12px !important}
+        #meetings .q24-in:focus{outline:2px solid rgba(37,99,235,.35);border-color:#2563eb !important}
+        #meetings .q24-card .q24-btn{border-radius:999px !important;border:1px solid rgba(37,99,235,.35) !important;background:#eff6ff !important;color:#1d4ed8 !important}
+        #meetings .q24-card .q24-btn.on{background:linear-gradient(135deg,#1d4ed8,#3b82f6) !important;color:#fff !important;border-color:#1d4ed8 !important;box-shadow:0 10px 20px -10px rgba(37,99,235,.7)}
+
+        /* in-meeting screen */
+        #q24Meet{background:radial-gradient(900px 500px at 50% 0%,rgba(37,99,235,.35),transparent 70%),linear-gradient(180deg,#0b1f4d,#07122e) !important;color:#e2e8f0}
+        #q24Meet .qm-top{background:rgba(255,255,255,.06) !important;border-bottom:1px solid rgba(147,197,253,.2) !important;color:#dbeafe;backdrop-filter:blur(8px);padding:12px 16px}
+        #q24Meet .qm-title{display:flex;align-items:center;gap:10px;min-width:0}
+        #q24Meet .qm-title b{color:#fff !important;font-size:14px;font-weight:900;text-transform:uppercase;letter-spacing:.02em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+        #q24Meet .qm-badge,#q24Meet .qm-info{display:inline-flex;align-items:center;gap:6px;font-size:9px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#dbeafe !important;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);padding:6px 10px;border-radius:999px;white-space:nowrap}
+        #q24Meet .qm-info{font-variant-numeric:tabular-nums}
+        #q24Meet .qm-copy{color:#93c5fd !important}
+        #q24Meet .qm-tile{background:linear-gradient(160deg,#0f2a6b,#091636);border:2px solid rgba(147,197,253,.18);border-radius:18px;box-shadow:0 14px 30px -16px rgba(0,0,0,.6)}
+        #q24Meet .qm-tile video{background:#0a1a3f}
+        #q24Meet .qm-tile.speak{border-color:#34d399;box-shadow:0 0 0 3px rgba(52,211,153,.25),0 14px 30px -16px rgba(0,0,0,.6)}
+        #q24Meet .qm-tile .qm-av{background:radial-gradient(260px 180px at 50% 40%,rgba(59,130,246,.38),transparent 70%),linear-gradient(160deg,#0f2a6b,#091636);color:#fff}
+        #q24Meet .qm-av span{position:relative;width:76px;height:76px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:900;color:#fff;background:linear-gradient(135deg,#2563eb,#60a5fa);box-shadow:0 14px 34px -8px rgba(37,99,235,.9),inset 0 1px 0 rgba(255,255,255,.4)}
+        #q24Meet .qm-av span::before,#q24Meet .qm-av span::after{content:"";position:absolute;inset:0;border-radius:50%;border:1.5px solid rgba(147,197,253,.55);animation:cxRing 3.2s ease-out infinite}
+        #q24Meet .qm-av span::after{animation-delay:1.6s}
+        #q24Meet .qm-tile .qm-nm{background:rgba(7,18,46,.7) !important;color:#fff !important;backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.2);border-radius:999px;padding:3px 10px}
+        #q24Meet .qm-side{background:rgba(10,26,63,.94) !important;border-left:1px solid rgba(147,197,253,.2) !important;color:#e2e8f0}
+        #q24Meet .qm-tabs button{color:#93c5fd}
+        #q24Meet .qm-tabs button.on{color:#fff;border-color:#60a5fa}
+        #q24Meet .qm-msg{color:#e2e8f0}#q24Meet .qm-msg b{color:#93c5fd}
+        #q24Meet .q24-h{color:#93c5fd !important}
+        #q24Meet .q24-in{background:rgba(255,255,255,.1) !important;color:#fff !important;border:1px solid rgba(147,197,253,.3) !important;border-radius:.8rem}
+        #q24Meet .q24-in::placeholder{color:rgba(219,234,254,.55)}
+        #q24Meet #qmChatIn{border-top:1px solid rgba(147,197,253,.2) !important}
+        #q24Meet .q24-btn.on{background:linear-gradient(135deg,#1d4ed8,#3b82f6) !important;color:#fff !important;border:0 !important;border-radius:999px}
+        #q24Meet .qm-bar{background:rgba(255,255,255,.06) !important;border-top:1px solid rgba(147,197,253,.2) !important;backdrop-filter:blur(8px);gap:12px;padding:14px}
+        #q24Meet .qm-b{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:50px;border-radius:999px;padding:0 20px;background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.25);transition:transform .15s ease,background .2s ease}
+        #q24Meet .qm-b:hover{background:rgba(255,255,255,.2);transform:translateY(-2px)}
+        #q24Meet .qm-b.off{background:#fff;color:#dc2626;border-color:#fff}
+        #q24Meet .qm-b.act{background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#fff;border-color:#60a5fa}
+        #q24Meet .qm-b.end{background:#dc2626;color:#fff;border-color:#f87171;box-shadow:0 14px 28px -8px rgba(220,38,38,.75);padding:0 26px}
+        #q24Meet .qm-b.end:hover{background:#ef4444}
+    
+</style>
 </head>
 <body class="bg-gray-50 text-gray-800 min-h-screen">
 
@@ -398,6 +572,8 @@ window.addEventListener('unhandledrejection', function(event){
 <a href="#" onclick="nav('management');return false" data-page="management" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-white"><svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/></svg>Management</a>
 <a href="#" onclick="nav('reports');return false" data-page="reports" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-white"><svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>Reports</a>
 <a href="#" onclick="nav('calendar');return false" data-page="calendar" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-white"><svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3M4 11h16M5 5h14a1 1 0 011 1v14a1 1 0 01-1 1H5a1 1 0 01-1-1V6a1 1 0 011-1z"/></svg><span class="flex-1">Staff Calendar</span></a>
+<a href="#" onclick="nav('connect');return false" data-page="connect" style="display:none" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-white"><svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5M19.1 4.9C23 8.8 23 15.1 19.1 19"/><circle cx="12" cy="12" r="2"/></svg>Connect</a>
+<a href="#" onclick="nav('meetings');return false" data-page="meetings" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-white"><svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5M19.1 4.9C23 8.8 23 15.1 19.1 19"/><circle cx="12" cy="12" r="2"/></svg>Connect</a>
 <a href="#" onclick="nav('health');return false" data-page="health" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-white"><svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12h4l2.5-6 4 12 2.5-6H21"/></svg><span class="flex-1">Health Hub</span><span id="hhBadge" class="hidden text-[9px] font-extrabold bg-red-500 text-white px-1.5 py-0.5 rounded-full"></span></a>
 <a href="#" onclick="nav('users');return false" data-page="users" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-white"><svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/></svg>User Management</a>
 </nav>
@@ -786,6 +962,12 @@ await sa.signOut();
 return{uid:cred.user.uid,email:email,username:meta.username||email.split('@')[0],...meta};
 }
 
+// Deletes a Firebase Authentication login. The browser SDK can only delete an account it is signed in to, so this needs the account's password.
+async function deleteAuthAccount(email,password){
+const sa=getSecondaryAuth();if(!sa)return{ok:false,code:'offline'};
+try{const cred=await sa.signInWithEmailAndPassword(String(email||'').trim().toLowerCase(),password);await cred.user.delete();return{ok:true}}
+catch(e){try{await sa.signOut()}catch(x){}return{ok:e.code==='auth/user-not-found',code:e.code||e.message}}
+}
 // Finance-restricted roles (Admin) may only read student-linked fee records.
 // The query is constrained to match the Firestore rule, which rejects an
 // unconstrained collection read from a non-finance account.
@@ -832,20 +1014,20 @@ await sa.signOut();
 return uid;
 }
 
-return{isReady,getDb,getInitError,whenReady,runConnectionTest,loadFeeLedger,signIn,signUp,signOutUser,onAuth,COL,clean,loadCollection,loadCollectionChecked,saveCollection,upsertDoc,deleteDoc,watchProgrammes,watchCollection,ensureUserDoc,provisionUser,provisionStudentAccount,listUsers,updateUserRole,setLmsRole,LOCAL_USERS,ROLE_LABELS_MAP,isStorageReady,uploadFile,deleteFile};
+return{deleteAuthAccount,isReady,getDb,getInitError,whenReady,runConnectionTest,loadFeeLedger,signIn,signUp,signOutUser,onAuth,COL,clean,loadCollection,loadCollectionChecked,saveCollection,upsertDoc,deleteDoc,watchProgrammes,watchCollection,ensureUserDoc,provisionUser,provisionStudentAccount,listUsers,updateUserRole,setLmsRole,LOCAL_USERS,ROLE_LABELS_MAP,isStorageReady,uploadFile,deleteFile};
 })();
 
 // ======================================================================
 // ROLE-BASED ACCESS CONTROL
 // ======================================================================
 const ROLE_DEFS={
-full:{label:'Full Access',sections:['dashboard','programmes','sites','allocation','lms','students','marketing','management','reports','calendar','health','users'],canManageUsers:true,financeAccess:true},
-it_full:{label:'IT - Full Access',sections:['dashboard','programmes','sites','allocation','lms','students','portalmgmt','marketing','management','reports','calendar','health','users'],canManageUsers:true,financeAccess:true},
-admin:{label:'Admin Access',sections:['dashboard','programmes','sites','allocation','feeview','lms','students','marketing','management','reports','calendar','users'],canManageUsers:true,financeAccess:false},
-admin_marketing:{label:'Students & Marketing',sections:['dashboard','students','lms','marketing','management','reports','calendar'],canManageUsers:false,financeAccess:false},
-marketing:{label:'Marketing Access',sections:['dashboard','lms','marketing','management','reports','calendar'],canManageUsers:false,financeAccess:false},
-finance:{label:'Finance Access',sections:['dashboard','lms','reports','calendar'],canManageUsers:false,financeAccess:true},
-staff:{label:'Staff (LMS Administration)',sections:['lms','calendar'],canManageUsers:false,financeAccess:false}
+full:{label:'Full Access',sections:['connect','meetings','dashboard','programmes','sites','allocation','lms','students','marketing','management','reports','calendar','health','users'],canManageUsers:true,financeAccess:true},
+it_full:{label:'IT - Full Access',sections:['connect','meetings','dashboard','programmes','sites','allocation','lms','students','portalmgmt','marketing','management','reports','calendar','health','users'],canManageUsers:true,financeAccess:true},
+admin:{label:'Admin Access',sections:['connect','meetings','dashboard','programmes','sites','allocation','feeview','lms','students','marketing','management','reports','calendar','users'],canManageUsers:true,financeAccess:false},
+admin_marketing:{label:'Students & Marketing',sections:['connect','meetings','dashboard','students','lms','marketing','management','reports','calendar'],canManageUsers:false,financeAccess:false},
+marketing:{label:'Marketing Access',sections:['connect','meetings','dashboard','lms','marketing','management','reports','calendar'],canManageUsers:false,financeAccess:false},
+finance:{label:'Finance Access',sections:['connect','meetings','dashboard','lms','reports','calendar'],canManageUsers:false,financeAccess:true},
+staff:{label:'Staff (LMS Administration)',sections:['connect','meetings','lms','calendar'],canManageUsers:false,financeAccess:false}
 };
 
 const USER_DEFS=[
@@ -915,6 +1097,7 @@ function applyRoleFilter(){
 const allowed=allowedSections();
 document.querySelectorAll('.sidebar-link[data-page]').forEach(el=>{
 const page=el.dataset.page;
+if(page==='connect'){el.style.display='none';return}
 if(page==='fees'&&!canAccessFinance()){el.style.display='none';return}
 if(page==='management'&&currentUser&&['full','it_full','admin'].includes(currentUser.role)){el.style.display='';return}
 if(page&&allowed.length&&!allowed.includes(page)){el.style.display='none'}else{el.style.display=''}
@@ -1472,6 +1655,7 @@ document.getElementById('userRole').textContent=user.roleLabel||user.role||'User
 if(user.role==='staff')currentPage='lms';
 applyRoleFilter();
 await initApp();
+try{Connect24S.init()}catch(e){}
 }
 
 // ---- USER PROVISIONING UI ----
@@ -1529,6 +1713,7 @@ results.map(r=>'<tr class="border-b border-slate-800 text-slate-200">'+
 }
 
 function doLogout(){
+try{Connect24S.stop()}catch(e){}
 FirebaseService.signOutUser();
 currentUser=null;
 document.getElementById('app').classList.add('hidden');
@@ -2176,10 +2361,10 @@ renderPage(page);
 function renderPage(page){
 document.querySelectorAll('.sidebar-link').forEach(el=>{el.classList.remove('active');if(el.dataset.page===page)el.classList.add('active')});
 Object.values(chartInstances).forEach(c=>c.destroy());chartInstances={};
-const titles={dashboard:'Dashboard',programmes:'Programmes',sites:'Teaching Sites',allocation:'Venue Allocation',lms:'LMS Management',students:'Students & Attendance',portalmgmt:'Portal Management',marketing:'Marketing',management:'Programme Management',reports:'Reports & Planning',users:'User Management',feeview:'Fees',health:'Health Hub',calendar:'Staff Calendar'};
+const titles={meetings:'Connect',connect:'Connect',dashboard:'Dashboard',programmes:'Programmes',sites:'Teaching Sites',allocation:'Venue Allocation',lms:'LMS Management',students:'Students & Attendance',portalmgmt:'Portal Management',marketing:'Marketing',management:'Programme Management',reports:'Reports & Planning',users:'User Management',feeview:'Fees',health:'Health Hub',calendar:'Staff Calendar'};
 document.getElementById('pageTitle').textContent=titles[page]||'Dashboard';
 const main=document.getElementById('mainContent');
-const R={dashboard:renderDashboard,programmes:renderProgrammes,sites:renderSites,allocation:renderAllocation,lms:renderLMS,feeview:renderFeeView,students:renderStudents,portalmgmt:renderPortalManagement,marketing:renderMarketing,management:renderMasterControl,reports:renderReports,users:renderUsers,health:renderHealthHub,calendar:renderStaffCalendar};
+const R={meetings:renderMeetings,connect:renderConnect,dashboard:renderDashboard,programmes:renderProgrammes,sites:renderSites,allocation:renderAllocation,lms:renderLMS,feeview:renderFeeView,students:renderStudents,portalmgmt:renderPortalManagement,marketing:renderMarketing,management:renderMasterControl,reports:renderReports,users:renderUsers,health:renderHealthHub,calendar:renderStaffCalendar};
 if(R[page]){main.innerHTML='';R[page](main)}
 }
 
@@ -2195,7 +2380,8 @@ h+='<div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">'
 +[['Add Schedule Entry',"nav('calendar');setTimeout(()=>StaffCalendar.edit(''),120)",'text-sky-700 bg-sky-50 hover:bg-sky-100'],
   ['My Schedule',"nav('calendar')",'text-indigo-700 bg-indigo-50 hover:bg-indigo-100'],
   ['System Health',"nav('health')",'text-emerald-700 bg-emerald-50 hover:bg-emerald-100'],
-  ['Open LMS',"nav('lms')",'text-purple-700 bg-purple-50 hover:bg-purple-100']].map(a=>'<button onclick="'+a[1]+'" class="px-3 py-2.5 rounded-lg text-xs font-bold '+a[2]+' transition-colors">'+a[0]+'</button>').join('')
+  ['Open LMS',"nav('lms')",'text-purple-700 bg-purple-50 hover:bg-purple-100'],
+  ['Connect',"nav('meetings')",'text-indigo-700 bg-indigo-50 hover:bg-indigo-100']].map(a=>'<button onclick="'+a[1]+'" class="px-3 py-2.5 rounded-lg text-xs font-bold '+a[2]+' transition-colors">'+a[0]+'</button>').join('')
 +'</div></div>'
 +'<div class="bg-white rounded-xl border border-gray-100 p-4" id="dashMyDay"><div class="text-xs text-gray-400">Loading your day...</div></div>'
 +'</div>';
@@ -4040,7 +4226,7 @@ h+='<tr class="border-b border-gray-50 hover:bg-blue-50/30'+(isMe?' bg-blue-50/5
 '<td class="px-4 py-3"><span class="badge '+(u.role==='full'||u.role==='it_full'?'badge-green':u.role==='finance'?'badge-purple':u.role==='admin_marketing'||u.role==='marketing'?'badge-orange':'badge-blue')+'">'+u.roleLabel+'</span></td>'+
 '<td class="px-4 py-3 text-[10px] text-gray-500">'+(u.role==='staff'?'LMS tab only':secs.length+' sections')+'</td>'+
 '<td class="px-4 py-3">'+(inFs?'<span class="badge badge-green">Active</span>':'<span class="badge badge-yellow">Not provisioned</span>')+'</td>'+
-'<td class="px-4 py-3 text-right">'+(canManageUsers()&&liveUid?'<button onclick="openGrantAccess(\''+liveUid+'\',\''+UI.escapeHtml(u.name).replace(/'/g,"\\'")+'\',\''+u.role+'\')" class="px-2.5 py-1 bg-blue-50 text-blue-700 hover:bg-blue-100 text-[11px] font-bold rounded-lg">Grant Access</button>':(canManageUsers()?'<span class="text-[10px] text-gray-300">Provision first</span>':''))+'</td>'+
+'<td class="px-4 py-3 text-right">'+(canManageUsers()&&liveUid?'<button onclick="openGrantAccess(\''+liveUid+'\',\''+UI.escapeHtml(u.name).replace(/'/g,"\\'")+'\',\''+u.role+'\')" class="px-2.5 py-1 bg-blue-50 text-blue-700 hover:bg-blue-100 text-[11px] font-bold rounded-lg">Grant Access</button>'+userDelBtn(liveUid,u.name,u.email):(canManageUsers()?'<span class="text-[10px] text-gray-300">Provision first</span>':''))+'</td>'+
 '</tr>'});
 extraStaff.forEach((u,i)=>{
 h+='<tr class="border-b border-gray-50 hover:bg-emerald-50/30">'+
@@ -4051,11 +4237,72 @@ h+='<tr class="border-b border-gray-50 hover:bg-emerald-50/30">'+
 '<td class="px-4 py-3"><span class="badge badge-blue">'+UI.escapeHtml(u.roleLabel||u.role||'')+'</span></td>'+
 '<td class="px-4 py-3 text-[10px] text-gray-500">'+(u.role==='staff'?'LMS tab only':(ROLE_DEFS[u.role]||{sections:[]}).sections.length+' sections')+'</td>'+
 '<td class="px-4 py-3"><span class="badge badge-green">Active</span></td>'+
-'<td class="px-4 py-3 text-right">'+(canManageUsers()?'<button onclick="openGrantAccess(\''+u.uid+'\',\''+UI.escapeHtml(u.name||'').replace(/'/g,"\\'")+'\',\''+(u.role||'')+'\')" class="px-2.5 py-1 bg-blue-50 text-blue-700 hover:bg-blue-100 text-[11px] font-bold rounded-lg">Grant Access</button>':'')+'</td>'+
+'<td class="px-4 py-3 text-right">'+(canManageUsers()?'<button onclick="openGrantAccess(\''+u.uid+'\',\''+UI.escapeHtml(u.name||'').replace(/'/g,"\\'")+'\',\''+(u.role||'')+'\')" class="px-2.5 py-1 bg-blue-50 text-blue-700 hover:bg-blue-100 text-[11px] font-bold rounded-lg">Grant Access</button>'+userDelBtn(u.uid,u.name,u.email):'')+'</td>'+
 '</tr>'});
 h+='</tbody></table></div></div>';
 h+='<div class="bg-white rounded-xl border border-gray-100 p-5 mt-6"><h3 class="text-sm font-semibold text-gray-700 mb-3">Provisioning Instructions</h3><div class="text-xs text-gray-600 space-y-2 leading-relaxed"><p class="flex gap-2"><span class="font-bold text-blue-600">1.</span><span>Click <strong>Provision Missing Accounts</strong> above. This creates each email account in <strong>Firebase Authentication</strong> and writes its profile to the <code class="bg-gray-100 px-1 rounded text-[10px]">users</code> collection in Firestore.</span></p><p class="flex gap-2"><span class="font-bold text-blue-600">2.</span><span>If an email already exists in Firebase Auth it is reported as <strong>Already exists</strong> and skipped, preventing duplicate accounts.</span></p><p class="flex gap-2"><span class="font-bold text-blue-600">3.</span><span>Ensure <strong>Email/Password</strong> sign-in is enabled in Firebase Console &rarr; Authentication &rarr; Sign-in method.</span></p><p class="flex gap-2"><span class="font-bold text-blue-600">4.</span><span>Users sign in with their full <code class="bg-gray-100 px-1 rounded text-[10px]">@atce.co.za</code> email address.</span></p><p class="flex gap-2"><span class="font-bold text-blue-600">5.</span><span>Use <strong>Add Staff Account</strong> to create Staff role accounts &mdash; they sign in at the <strong>ATCE Staff Portal</strong> as before, and can now also sign in here on the Dashboard, where they see only the <strong>LMS</strong> tab for full LMS administration.</span></p></div></div>';
 el.innerHTML=h;
+window._dupGroups=findDupGroups(live);
+if(canManageUsers()&&window._dupGroups.length){const extra=window._dupGroups.reduce((n,g)=>n+g.length-1,0);el.insertAdjacentHTML('afterbegin','<div class="mb-4 px-4 py-3 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-between flex-wrap gap-2"><div class="text-xs text-amber-800"><strong>'+window._dupGroups.length+' duplicated account'+(window._dupGroups.length>1?'s':'')+' found</strong> ('+extra+' extra profile'+(extra>1?'s':'')+'). Same email or same name appears more than once.</div><button onclick="openMergeDuplicates()" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold rounded-lg">Merge Duplicates</button></div>')}
+}
+function userDelBtn(uid,name,email){return '<button data-email="'+UI.escapeHtml(email||'')+'" data-uid="'+UI.escapeHtml(uid)+'" data-name="'+UI.escapeHtml(name||'')+'" onclick="deleteUserAccount(this)" class="ml-1.5 px-2.5 py-1 bg-red-50 text-red-600 hover:bg-red-100 text-[11px] font-bold rounded-lg">Delete</button>'}
+async function deleteUserAccount(btn){
+if(!canManageUsers())return;
+const uid=btn.dataset.uid,name=btn.dataset.name||'this user',email=(btn.dataset.email||'').toLowerCase();
+if(currentUser&&currentUser.uid===uid)return alert('You cannot delete your own account.');
+if(!confirm('Permanently delete the account for '+name+'?\n\nThis removes their profile, LMS role and Firebase login where possible.'))return;
+btn.disabled=true;btn.textContent='Deleting...';
+const def=USER_DEFS.find(d=>String(d.email).toLowerCase()===email);
+let authMsg='';
+if(email){
+let pw=def&&def.password;
+if(!pw)pw=prompt('To delete the Firebase login for '+email+', enter that account\'s password.\n\nLeave blank to skip (the login will stay in Firebase Authentication).')||'';
+if(pw){const r=await FirebaseService.deleteAuthAccount(email,pw);authMsg=r.ok?'Firebase login deleted.':'Firebase login NOT deleted ('+r.code+') - remove it in Firebase Console > Authentication.'}
+else authMsg='Firebase login NOT deleted - remove it in Firebase Console > Authentication.';
+}
+const ok=await FirebaseService.deleteDoc('users',uid);
+if(ok){await FirebaseService.deleteDoc('peers',uid);if(email)await FirebaseService.deleteDoc('lmsRoles',email);alert('Account deleted from User Management.\n'+authMsg);renderUserAccounts()}
+else{alert('Could not delete this account. Check your connection and permissions.\n'+authMsg);btn.disabled=false;btn.textContent='Delete'}
+}
+function findDupGroups(users){
+const norm=v=>String(v||'').trim().toLowerCase().replace(/\s+/g,' ');
+const p=users.map((_,i)=>i),seen={};
+const fd=i=>{while(p[i]!==i){p[i]=p[p[i]];i=p[i]}return i};
+users.forEach((u,i)=>{[['e',norm(u.email)],['n',norm(u.name)]].forEach(([t,v])=>{if(!v)return;const k=t+':'+v;if(seen[k]!==undefined)p[fd(i)]=fd(seen[k]);else seen[k]=i})});
+const g={};users.forEach((u,i)=>{(g[fd(i)]=g[fd(i)]||[]).push(u)});
+return Object.values(g).filter(a=>a.length>1);
+}
+function openMergeDuplicates(){
+const groups=window._dupGroups||[];if(!groups.length)return;
+const me=currentUser&&currentUser.uid;
+const ts=u=>u.lastLogin&&u.lastLogin.toMillis?u.lastLogin.toMillis():0;
+const E=UI.escapeHtml;
+let h='<div class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between z-20"><h2 class="text-lg font-bold text-gray-900">Merge Duplicate Accounts</h2><button onclick="closeModal()" class="p-2 rounded-lg hover:bg-gray-100"><svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12"/></svg></button></div><div class="p-6"><p class="text-xs text-gray-500 mb-4">Pick the profile to <strong>keep</strong> in each group. Missing details are copied from the others, then the others are removed from User Management. (Their sign-in logins in Firebase Authentication are not deleted.)</p>';
+groups.forEach((g,gi)=>{
+let keep=g.find(u=>u.uid===me)||g.slice().sort((a,b)=>ts(b)-ts(a))[0];
+h+='<div class="border border-gray-200 rounded-xl p-3 mb-3"><div class="text-[10px] font-bold text-gray-400 uppercase mb-2">Group '+(gi+1)+'</div>'+g.map(u=>'<label class="flex items-start gap-3 py-2 border-t border-gray-50 first:border-0 cursor-pointer"><input type="radio" name="dk'+gi+'" value="'+E(u.uid)+'"'+(u.uid===keep.uid?' checked':'')+(g.some(x=>x.uid===me)&&u.uid!==me?' disabled':'')+' class="mt-1"><span class="text-sm"><span class="font-semibold text-gray-900">'+E(u.name||'(no name)')+'</span>'+(u.uid===me?' <span class="badge badge-blue">You</span>':'')+'<br><span class="font-mono text-xs text-sky-700">'+E(u.email||'(no email)')+'</span> <span class="text-[10px] text-gray-500">&middot; '+E(u.roleLabel||u.role||'no role')+'</span></span></label>').join('')+'</div>'});
+h+='<div id="mergeResult"></div><div class="flex justify-end gap-2 mt-2"><button onclick="closeModal()" class="px-4 py-2.5 text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg">Cancel</button><button id="mergeBtn" onclick="runMergeDuplicates()" class="px-5 py-2.5 text-sm font-bold text-white bg-amber-500 hover:bg-amber-600 rounded-lg">Merge All</button></div></div>';
+document.getElementById('programmeModalContent').innerHTML=h;const m=document.getElementById('programmeModal');m.classList.remove('hidden');document.body.style.overflow='hidden';
+}
+async function runMergeDuplicates(){
+const groups=window._dupGroups||[];
+if(!confirm('Merge '+groups.length+' group(s)? The unselected profiles will be removed.'))return;
+const btn=document.getElementById('mergeBtn');if(btn){btn.disabled=true;btn.textContent='Merging...'}
+let removed=0,failed=0;
+for(let gi=0;gi<groups.length;gi++){
+const g=groups[gi],sel=document.querySelector('input[name="dk'+gi+'"]:checked');if(!sel)continue;
+const keeper=g.find(u=>u.uid===sel.value),others=g.filter(u=>u.uid!==sel.value);
+const merged={};
+['name','email','username','role','roleLabel','initials'].forEach(k=>{const v=[keeper].concat(others).map(u=>u[k]).find(x=>x);if(v)merged[k]=v});
+const secs=[];[keeper].concat(others).forEach(u=>(u.sections||[]).forEach(x=>{if(!secs.includes(x))secs.push(x)}));
+if(secs.length)merged.sections=secs;
+merged.isActive=[keeper].concat(others).some(u=>u.isActive!==false);
+if(!(await FirebaseService.upsertDoc('users',keeper.uid,merged))){failed+=others.length;continue}
+for(const o of others){(await FirebaseService.deleteDoc('users',o.uid))?removed++:failed++}
+}
+closeModal();
+alert('Merge complete: '+removed+' duplicate profile(s) removed'+(failed?', '+failed+' failed (check permissions/connection).':'.'));
+renderUserAccounts();
 }
 function openAddStaffForm(){
 const modal=document.getElementById('programmeModal');
@@ -4951,6 +5198,814 @@ document.addEventListener('keydown',e=>{
         closeFormModal();
     }
 });
+</script>
+<div id="incomingCallAlert" class="hidden fixed top-4 left-1/2 -translate-x-1/2 w-[92%] max-w-sm bg-white rounded-2xl p-4 shadow-2xl border-2 border-blue-500" style="z-index:950">
+<div class="flex items-center gap-3"><div class="relative"><div class="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center text-white"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg></div><div class="absolute inset-0 rounded-full border-2 border-blue-500 animate-ping"></div></div>
+<div class="flex-1 min-w-0"><p class="font-black text-sm uppercase text-slate-800">Incoming 24S Call</p><p class="text-[11px] text-blue-600 font-bold truncate" id="incomingJobInfo">Colleague</p></div>
+<div class="flex gap-2"><button onclick="answerCall(true)" aria-label="Answer" class="w-11 h-11 bg-emerald-500 rounded-xl flex items-center justify-center text-white"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></button>
+<button onclick="answerCall(false)" aria-label="Decline" class="w-11 h-11 bg-red-600 rounded-xl flex items-center justify-center text-white"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div></div></div>
+<div id="callModal" class="cx-modal">
+        <div class="cx-call">
+            <!-- Video Stage (Real WebRTC) -->
+            <div id="videoStage" class="cx-stage">
+                <video id="remoteVideo" autoplay playsinline class="cx-rv"></video>
+                <audio id="remoteAudio" autoplay class="hidden"></audio>
+                <div id="remotePlaceholder" class="cx-ph">
+                    <div class="cx-avatar"><i></i><i></i><i></i><div class="cx-av-core"><svg class="cx-i cx-i--xl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></div></div>
+                    <span class="cx-ph-t">Waiting for remote feed…</span>
+                </div>
+                <div class="cx-top">
+                    <span class="cx-pill"><svg class="cx-i cx-i--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/></svg>Secure &bull; WebRTC <span id="peerStatus">[offline]</span></span>
+                    <span id="callTimer" class="cx-pill cx-timer">00:00</span>
+                </div>
+                <div id="selfView" class="hidden cx-self">
+                    <video id="localVideo" autoplay playsinline muted class="w-full h-full object-cover"></video>
+                </div>
+            </div>
+
+            <div class="cx-panel">
+                <!-- Job-linked context -->
+                <div class="cx-ctx">
+                    <span class="cx-ctx-ico"><svg class="cx-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg></span>
+                    <div class="min-w-0">
+                        <p class="cx-ctx-k">Call with</p>
+                        <p id="callJobId" class="cx-ctx-t">No active job</p>
+                        <p id="callJobSite" class="cx-ctx-s">Job context will appear here.</p>
+                    </div>
+                </div>
+
+                <div class="cx-status"><span id="callStatus">Connecting…</span></div>
+
+                <div class="cx-ctls">
+                    <div class="cx-ctl-w">
+                        <button onclick="toggleMute()" id="muteBtn" class="cx-ctl" aria-label="Mute"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4"/></svg></button>
+                        <span>Mute</span>
+                    </div>
+                    <div class="cx-ctl-w">
+                        <button onclick="endCall()" class="cx-ctl cx-ctl--end" aria-label="End call"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/><path d="m2 2 20 20"/></svg></button>
+                        <span>End</span>
+                    </div>
+                    <div class="cx-ctl-w">
+                        <button onclick="toggleVideo()" id="vidBtn" class="cx-ctl" aria-label="Camera"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m22 8-6 4 6 4z"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg></button>
+                        <span>Camera</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<script id="connect24s">
+/* ===== 24S CONNECT (ported from 24S Help Centre) — voice/video calls between signed-in dashboard users ===== */
+(function () {
+  'use strict';
+  const RTC_CONFIG = {
+    server: {},   // optional self-hosted PeerJS server, e.g. { host:'peer.yourdomain.com', port:443, path:'/', secure:true }
+    iceServers: [
+      { urls: 'stun:stun.l.google.com:19302' },
+      { urls: 'stun:stun1.l.google.com:19302' },
+      { urls: 'stun:stun.cloudflare.com:3478' },
+      // Free public TURN relay for testing only — replace with your own (Metered/Twilio/coturn) for production
+      { urls: ['turn:openrelay.metered.ca:80', 'turn:openrelay.metered.ca:80?transport=tcp', 'turn:openrelay.metered.ca:443', 'turns:openrelay.metered.ca:443?transport=tcp'],
+        username: 'openrelayproject', credential: 'openrelayproject' }
+    ],
+    turnApiUrl: '',            // optional: Metered credentials URL returning a fresh ICE list
+    iceConnectTimeoutMs: 25000, maxAutoRetries: 1, ringTimeoutMs: 45000, audioBitrate: 32000,
+    levels: [
+      { label: 'HD', bitrate: 600000, scale: 1, video: true },
+      { label: 'Low', bitrate: 180000, scale: 2, video: true },
+      { label: 'Audio only', bitrate: 0, scale: 4, video: false }
+    ]
+  };
+  const PEERS = 'peers';   // Firestore collection holding each user's current peer id (presence)
+  const rtc = {
+    peer: null, localStream: null, activeConn: null, incomingConn: null, muted: false, videoOff: false, mode: 'voice',
+    currentPeerId: null, retry: 0, retryTimer: null, ringTimer: null, ringBuzz: null, ringAuto: null, statsTimer: null,
+    level: 0, bad: 0, good: 0, logged: false, ending: false, wake: null, session: Math.random().toString(36).slice(2, 7),
+    iceServers: null, iceReady: false, peerStartedAt: 0, presenceTimer: null, lastDial: null, callRetries: 0, iceTimer: null,
+    side: null, online: {}, targetUid: null, users: [], history: [], timerId: null, t0: 0, started: false, dialErr: null
+  };
+  const $id = id => document.getElementById(id);
+  const dlog = (tag, msg) => { try { console.debug('[24S ' + tag + ']', msg); } catch (e) {} };
+  const escH = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const getDb = () => { try { return FirebaseService.getDb(); } catch (e) { return null; } };
+  const me = () => { try { return firebase.auth().currentUser; } catch (e) { return null; } };
+  const myName = () => (window.currentUser && (currentUser.name || currentUser.username)) || 'ATCE user';
+  const cxOpen = id => { const e = $id(id); if (e) e.classList.add('open'); };
+  const cxClose = id => { const e = $id(id); if (e) e.classList.remove('open'); };
+
+  function setPeerStatus(txt, ok) {
+    dlog('PEER', txt);
+    const el = $id('peerStatus'); if (el) el.textContent = ok ? 'Channel ready' : txt;
+  }
+  function setCallStatus(txt, ok) {
+    dlog('STATUS', txt);
+    const el = $id('callStatus'); if (el) { el.textContent = txt; el.classList.toggle('ok', !!ok); }
+  }
+
+  /* ---------- presence / routing ---------- */
+  function getMyPeerId() { const u = me(); return u ? '24S-' + u.uid + '-' + rtc.session : null; }
+  function publishPresence() {
+    const u = me(), db = getDb(); if (!u || !db || !rtc.currentPeerId) return;
+    db.collection(PEERS).doc(u.uid).set({ peerId: rtc.currentPeerId, name: myName(), at: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true })
+      .catch(e => { console.error('Presence write failed — add Firestore rules for /peers:', e); setPeerStatus('online – presence blocked (Firestore rules)', false); });
+  }
+  async function refreshPresence() {
+    const db = getDb(); if (!db) return rtc.online;
+    try {
+      const snap = await db.collection(PEERS).get(), m = {};
+      snap.forEach(d => { const at = d.data().at; m[d.id] = at && at.toMillis ? Date.now() - at.toMillis() < 150000 : false; });
+      rtc.online = m;
+    } catch (e) { /* rules may block listing — dots stay grey */ }
+    return rtc.online;
+  }
+  const isOnline = uid => !!rtc.online[uid];
+  async function loadUsers() {
+    try { rtc.users = (await FirebaseService.listUsers()) || []; } catch (e) { rtc.users = []; }
+    return rtc.users;
+  }
+  function colleagues() {
+    const u = me(), id = u && u.uid;
+    const nm = v => String(v || '').trim().toLowerCase().replace(/\s+/g, ' ');
+    const myE = nm(u && u.email), myN = nm(u && u.name);
+    const raw = rtc.users.filter(t => t.uid && t.uid !== id && !(myE && nm(t.email) === myE) && !(myN && nm(t.name) === myN));
+    const p = raw.map((_, i) => i), seen = {}, fd = i => { while (p[i] !== i) { p[i] = p[p[i]]; i = p[i]; } return i; };
+    raw.forEach((t, i) => [['e', nm(t.email)], ['n', nm(t.name)]].forEach(([k, v]) => { if (!v) return; k += ':' + v; if (seen[k] !== undefined) p[fd(i)] = fd(seen[k]); else seen[k] = i; }));
+    const best = {}, ms = t => (t.lastLogin && t.lastLogin.toMillis ? t.lastLogin.toMillis() : 0);
+    raw.forEach((t, i) => { const r = fd(i), b = best[r]; if (!b || (isOnline(t.uid) - isOnline(b.uid)) > 0 || (isOnline(t.uid) === isOnline(b.uid) && ms(t) > ms(b))) best[r] = t; });
+    return Object.values(best)
+      .sort((a, b) => (isOnline(b.uid) - isOnline(a.uid)) || String(a.name || '').localeCompare(String(b.name || '')));
+  }
+  function targetSelectHTML() {
+    const list = colleagues();
+    const opt = t => '<option value="' + escH(t.uid) + '"' + (rtc.targetUid === t.uid ? ' selected' : '') + '>' + escH(t.name || t.username || t.email || t.uid) + (isOnline(t.uid) ? '' : ' (offline)') + '</option>';
+    return '<div class="cx-card" style="padding:1rem 1.2rem"><label class="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">Call who?</label>' +
+      '<select class="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm bg-white" onchange="setCallTarget(this.value)">' +
+      '<option value="">' + (list.length ? 'Select a colleague…' : 'No other users found') + '</option>' + list.map(opt).join('') + '</select>' +
+      '<label class="block text-[10px] font-black uppercase tracking-widest text-slate-500 mt-3 mb-1">Reason for call <span class="text-slate-300">(optional, shown to receiver)</span></label>' +
+      '<input id="callReason" maxlength="120" class="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm" placeholder="e.g. Venue allocation for Cohort 12"></div>';
+  }
+  window.setCallTarget = function (uid) {
+    rtc.targetUid = uid || null;
+    const t = rtc.users.find(x => x.uid === uid);
+    const j = $id('connectJobId'), s = $id('connectJobSite');
+    if (j) j.textContent = t ? (t.name || t.username || 'Colleague') : 'Choose who to call';
+    if (s) s.textContent = t ? (isOnline(uid) ? 'Online now — ready to connect.' : 'Appears offline — they must have the dashboard open to receive calls.') : 'Pick a colleague below, then start a voice or video call.';
+  };
+  async function resolveRemotePeerId(uid) {
+    const db = getDb(); if (!db) return null;
+    try {
+      const snap = await Promise.race([db.collection(PEERS).doc(uid).get(), new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 4000))]);
+      if (snap.exists && snap.data().peerId) return snap.data().peerId;
+    } catch (e) {}
+    return null;
+  }
+
+  /* ---------- PeerJS signalling ---------- */
+  async function refreshIce() {
+    if (!RTC_CONFIG.turnApiUrl) { rtc.iceReady = true; return; }
+    try {
+      const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 5000);
+      const r = await fetch(RTC_CONFIG.turnApiUrl, { signal: ctl.signal }); clearTimeout(t);
+      const list = await r.json();
+      if (Array.isArray(list) && list.length) rtc.iceServers = list.concat(RTC_CONFIG.iceServers.filter(x => String(x.urls).includes('stun')));
+    } catch (e) { console.warn('TURN credential fetch failed, using defaults'); }
+    rtc.iceReady = true;
+  }
+  function destroyPeer() {
+    clearTimeout(rtc.retryTimer);
+    if (rtc.peer) { try { rtc.peer.destroy(); } catch (e) {} }
+    rtc.peer = null; rtc.currentPeerId = null; clearInterval(rtc.presenceTimer);
+  }
+  function scheduleRetry() {
+    clearTimeout(rtc.retryTimer);
+    const delay = Math.min(30000, 1000 * 2 ** Math.min(rtc.retry++, 5));
+    rtc.retryTimer = setTimeout(() => { if (rtc.activeConn) return scheduleRetry(); destroyPeer(); initRTC(); }, delay);
+  }
+  const PEER_LIB_URLS = ['https://cdn.jsdelivr.net/npm/peerjs@1.5.2/dist/peerjs.min.js', 'https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js', 'https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.2/peerjs.min.js'];
+  let peerLibPromise = null;
+  function loadPeerLib() {
+    if (typeof Peer !== 'undefined') return Promise.resolve(true);
+    if (peerLibPromise) return peerLibPromise;
+    peerLibPromise = (async () => {
+      for (const url of PEER_LIB_URLS) {
+        const ok = await new Promise(res => {
+          const el = document.createElement('script'); el.src = url;
+          el.onload = () => res(typeof Peer !== 'undefined'); el.onerror = () => { el.remove(); res(false); };
+          document.head.appendChild(el);
+        });
+        if (ok) return true;
+      }
+      peerLibPromise = null; return false;
+    })();
+    return peerLibPromise;
+  }
+  function initRTC() {
+    if (!rtc.started || !me()) return;
+    if (typeof Peer === 'undefined') { setPeerStatus('loading library…', false); loadPeerLib().then(ok => ok ? initRTC() : setPeerStatus('PeerJS blocked — check network', false)); return; }
+    if (!rtc.iceReady) { refreshIce().then(() => initRTC()); return; }
+    const myId = getMyPeerId();
+    if (rtc.peer && !rtc.peer.destroyed && rtc.currentPeerId === myId) { if (rtc.peer.disconnected) { try { rtc.peer.reconnect(); } catch (e) {} } return; }
+    destroyPeer(); setPeerStatus('connecting…', false);
+    const p = new Peer(myId, { debug: 1, ...RTC_CONFIG.server, config: { iceServers: rtc.iceServers || RTC_CONFIG.iceServers, iceCandidatePoolSize: 4 } });
+    rtc.peer = p; rtc.currentPeerId = myId; rtc.peerStartedAt = Date.now();
+    p.on('open', () => {
+      rtc.retry = 0; setPeerStatus('online', true); publishPresence();
+      clearInterval(rtc.presenceTimer); rtc.presenceTimer = setInterval(publishPresence, 60000);
+    });
+    p.on('call', handleIncomingCall);
+    p.on('disconnected', () => { if (p.destroyed) return; setPeerStatus('reconnecting…', false); setTimeout(() => { try { if (p.disconnected && !p.destroyed) p.reconnect(); } catch (e) {} }, 1000); });
+    p.on('error', e => {
+      dlog('PEER', 'error: ' + e.type);
+      if (e.type === 'peer-unavailable') return;
+      if (e.type === 'unavailable-id') rtc.session = Math.random().toString(36).slice(2, 7);
+      setPeerStatus(e.type, false);
+      if (['unavailable-id', 'network', 'server-error', 'socket-error', 'socket-closed'].includes(e.type)) scheduleRetry();
+    });
+  }
+  async function peerReady(ms = 8000) {
+    if (!rtc.peer) { if (!(await loadPeerLib())) return false; initRTC(); }
+    return new Promise(res => {
+      const p = rtc.peer; if (!p) return res(false); if (p.open) return res(true);
+      const t = setTimeout(() => res(false), ms); p.once('open', () => { clearTimeout(t); res(true); });
+    });
+  }
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) initRTC(); });
+  window.addEventListener('online', () => initRTC());
+  setInterval(() => {   // watchdog: keep signalling alive so incoming calls can always arrive
+    if (!rtc.started || rtc.activeConn) return;
+    const p = rtc.peer;
+    if (!p || p.destroyed) return initRTC();
+    if (p.disconnected) { try { p.reconnect(); } catch (e) {} return; }
+    if (!p.open && Date.now() - rtc.peerStartedAt > 20000) { destroyPeer(); initRTC(); }
+  }, 15000);
+
+  /* ---------- media + adaptive quality ---------- */
+  async function getMedia(wantsVideo) {
+    const audio = { echoCancellation: true, noiseSuppression: true, autoGainControl: true };
+    const video = wantsVideo ? { width: { ideal: 640 }, height: { ideal: 360 }, frameRate: { ideal: 24, max: 30 }, facingMode: 'user' } : false;
+    try { return await navigator.mediaDevices.getUserMedia({ audio, video }); }
+    catch (err) {
+      if (wantsVideo) { try { return await navigator.mediaDevices.getUserMedia({ audio, video: false }); } catch (e) {} }
+      return null;
+    }
+  }
+  function releaseMedia() { if (rtc.localStream) rtc.localStream.getTracks().forEach(t => t.stop()); rtc.localStream = null; }
+  function attachStreams() {
+    const hasVideo = rtc.localStream && rtc.localStream.getVideoTracks().length > 0;
+    $id('localVideo').srcObject = rtc.localStream; $id('selfView').classList.toggle('hidden', !hasVideo);
+  }
+  function paintToggles() {
+    const m = $id('muteBtn'), v = $id('vidBtn');
+    if (m) m.classList.toggle('bg-[#ff3e3e]', rtc.muted);
+    if (v) v.classList.toggle('bg-[#ff3e3e]', rtc.videoOff);
+  }
+  function resetCallUI() {
+    Object.assign(rtc, { muted: false, videoOff: false, level: 0, bad: 0, good: 0, logged: false });
+    paintToggles(); $id('callTimer').textContent = '00:00';
+    $id('remotePlaceholder').classList.remove('hidden'); $id('remotePlaceholder').querySelector('span').textContent = 'Waiting for remote feed…';
+  }
+  function startLevel() {
+    const c = navigator.connection; if (!c) return 0;
+    if (c.saveData || /^(slow-2g|2g)$/.test(c.effectiveType || '')) return 2;
+    return c.effectiveType === '3g' ? 1 : 0;
+  }
+  async function applyLevel(conn, idx) {
+    const pc = conn.peerConnection, lvl = RTC_CONFIG.levels[idx]; if (!pc) return; rtc.level = idx;
+    for (const s of pc.getSenders()) {
+      if (!s.track) continue;
+      try {
+        const prm = s.getParameters(); if (!prm.encodings || !prm.encodings.length) prm.encodings = [{}];
+        if (s.track.kind === 'video') {
+          s.track.contentHint = 'motion'; s.track.enabled = lvl.video && !rtc.videoOff;
+          prm.encodings[0].maxBitrate = lvl.bitrate || 60000; prm.encodings[0].scaleResolutionDownBy = lvl.scale; prm.encodings[0].maxFramerate = 24;
+          prm.degradationPreference = 'maintain-framerate';
+        } else { s.track.contentHint = 'speech'; prm.encodings[0].maxBitrate = RTC_CONFIG.audioBitrate; }
+        await s.setParameters(prm);
+      } catch (e) {}
+    }
+  }
+  function stopMonitor() { clearInterval(rtc.statsTimer); rtc.statsTimer = null; }
+  function startMonitor(conn) {
+    stopMonitor(); let prev = null;
+    rtc.statsTimer = setInterval(async () => {
+      const pc = conn.peerConnection; if (!pc || rtc.activeConn !== conn) return stopMonitor();
+      let lost = 0, recv = 0, rtt = 0;
+      try {
+        (await pc.getStats()).forEach(r => {
+          if (r.type === 'inbound-rtp') { lost += r.packetsLost || 0; recv += r.packetsReceived || 0; }
+          if (r.type === 'candidate-pair' && r.nominated && r.currentRoundTripTime) rtt = r.currentRoundTripTime * 1000;
+        });
+      } catch (e) { return; }
+      if (prev) {
+        const dl = Math.max(0, lost - prev.lost), dr = Math.max(0, recv - prev.recv);
+        const bad = dl / Math.max(1, dl + dr) > 0.08 || rtt > 600;
+        rtc.bad = bad ? rtc.bad + 1 : 0; rtc.good = bad ? 0 : rtc.good + 1;
+        const max = rtc.mode === 'video' ? RTC_CONFIG.levels.length - 1 : 0;
+        if (rtc.bad >= 2 && rtc.level < max) { rtc.bad = 0; applyLevel(conn, rtc.level + 1); }
+        else if (rtc.good >= 4 && rtc.level > 0) { rtc.good = 0; applyLevel(conn, rtc.level - 1); }
+        if (rtc.mode === 'video') setCallStatus('Connected • ' + RTC_CONFIG.levels[rtc.level].label, true);
+      }
+      prev = { lost, recv };
+    }, 3000);
+  }
+  function keepAwake() { try { navigator.wakeLock && navigator.wakeLock.request('screen').then(l => rtc.wake = l).catch(() => {}); } catch (e) {} }
+  function releaseWake() { try { rtc.wake && rtc.wake.release(); } catch (e) {} rtc.wake = null; }
+  function startTimer() {
+    clearInterval(rtc.timerId); rtc.t0 = Date.now();
+    rtc.timerId = setInterval(() => { const s = Math.floor((Date.now() - rtc.t0) / 1000); const t = $id('callTimer'); if (t) t.textContent = String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0'); }, 1000);
+  }
+
+  /* ---------- call wiring ---------- */
+  function bindCall(conn, type, who) {
+    rtc.activeConn = conn; rtc.mode = type;
+    conn.on('stream', remote => {
+      clearTimeout(rtc.ringTimer);
+      const rv = $id('remoteVideo'); if (rv.srcObject !== remote) rv.srcObject = remote; rv.play().catch(() => {});
+      const hasVideo = remote.getVideoTracks().length > 0;
+      $id('remotePlaceholder').classList.toggle('hidden', hasVideo);
+      if (!hasVideo) $id('remotePlaceholder').querySelector('span').textContent = 'Voice call in progress';
+      setCallStatus('Connected', true);
+      if (!rtc.logged) { rtc.logged = true; logCall(type, who); startTimer(); }
+      applyLevel(conn, startLevel()); startMonitor(conn); keepAwake();
+    });
+    conn.on('close', () => { if (rtc.activeConn === conn) endCall('Remote ended the call'); });
+    conn.on('error', err => { console.error('Call error:', err); if (rtc.activeConn === conn) endCall('Call error'); });
+    const pc = conn.peerConnection;
+    if (pc) {
+      let t;
+      pc.addEventListener('iceconnectionstatechange', () => {
+        const s = pc.iceConnectionState; clearTimeout(t);
+        if (rtc.activeConn !== conn) return;
+        if (s === 'checking') {
+          setCallStatus('Connecting…', false); clearTimeout(rtc.iceTimer);
+          rtc.iceTimer = setTimeout(() => { if (rtc.activeConn === conn && !['connected', 'completed'].includes(pc.iceConnectionState)) failCall(conn, 'Could not establish media — check network'); }, RTC_CONFIG.iceConnectTimeoutMs);
+        } else if (s === 'disconnected') {
+          setCallStatus('Weak connection — retrying…', false);
+          t = setTimeout(() => { if (rtc.activeConn === conn && !['connected', 'completed'].includes(pc.iceConnectionState)) endCall('Connection lost'); }, 8000);
+        } else if (s === 'failed') failCall(conn, 'Connection failed — check network');
+        else if (s === 'connected' || s === 'completed') { clearTimeout(rtc.iceTimer); setCallStatus('Connected', true); }
+      });
+    }
+  }
+  function failCall(conn, reason) {
+    const d = rtc.lastDial;
+    if (rtc.side === 'caller' && !rtc.logged && d && rtc.callRetries < RTC_CONFIG.maxAutoRetries && rtc.localStream) {
+      rtc.callRetries++; clearTimeout(rtc.iceTimer); clearTimeout(rtc.ringTimer);
+      rtc.activeConn = null; try { conn.close(); } catch (e) {}
+      setCallStatus('Reconnecting…', false);
+      setTimeout(() => { if (!rtc.ending && !rtc.activeConn && rtc.localStream) dial(d.peerId, d.type, d.who, d.reason); }, 1500);
+      return;
+    }
+    endCall(reason);
+  }
+  function dial(peerId, type, who, reason) {
+    rtc.side = 'caller'; rtc.lastDial = { peerId, type, who, reason };
+    const conn = rtc.peer.call(peerId, rtc.localStream, { metadata: { callerName: myName(), callerUid: me() && me().uid, type, context: reason || '' } });
+    if (!conn) return endCall('Call failed — remote peer not found');
+    const onErr = e => {
+      if (e.type !== 'peer-unavailable' || rtc.activeConn !== conn) return;
+      rtc.peer.off('error', onErr); rtc.activeConn = null; try { conn.close(); } catch (x) {}
+      endCall('Colleague is offline — they need the dashboard open to receive calls');
+    };
+    rtc.peer.on('error', onErr); rtc.dialErr = onErr;
+    conn.on('stream', () => rtc.peer && rtc.peer.off('error', onErr));
+    bindCall(conn, type, who); setCallStatus('Ringing…', false);
+    clearTimeout(rtc.ringTimer);
+    rtc.ringTimer = setTimeout(() => { if (rtc.activeConn === conn && !rtc.logged) endCall('No answer'); }, RTC_CONFIG.ringTimeoutMs);
+  }
+  window.startCall = async function (type) {
+    if (rtc.activeConn || rtc.ending) return;
+    if (!me()) return alert('Sign in (online mode) to use Connect.');
+    if (!rtc.targetUid) { const w = $id('callTargetWrap'), sel = w && w.querySelector('select'); const st = $id('connectJobSite'); if (st) st.textContent = 'Please choose a colleague to call first.'; if (sel) { sel.focus(); sel.animate([{ transform: 'translateX(0)' }, { transform: 'translateX(-6px)' }, { transform: 'translateX(6px)' }, { transform: 'translateX(0)' }], { duration: 250 }); } return; }
+    const t = rtc.users.find(x => x.uid === rtc.targetUid), who = (t && (t.name || t.username)) || 'Colleague';
+    const reasonEl = $id('callReason'), reason = reasonEl ? reasonEl.value.trim() : '';
+    rtc.mode = type; rtc.callRetries = 0; rtc.started = true;
+    $id('callJobId').textContent = who; $id('callJobSite').textContent = reason || 'No reason given';
+    initRTC(); resetCallUI(); cxOpen('callModal');
+    setCallStatus('Preparing ' + (type === 'video' ? 'video' : 'voice') + ' call…', false);
+    const [ready, stream] = await Promise.all([peerReady(), getMedia(type === 'video')]);
+    if (!stream) return setCallStatus('Camera/mic blocked. Allow permissions (HTTPS required).', false);
+    rtc.localStream = stream; attachStreams();
+    if (!ready) { releaseMedia(); return setCallStatus('Signaling server unreachable. Check connection.', false); }
+    setCallStatus('Locating colleague…', false);
+    const pid = await resolveRemotePeerId(rtc.targetUid);
+    if (!pid) { releaseMedia(); return endCall('Colleague is offline — they need the dashboard open to receive calls'); }
+    dial(pid, type, who, reason);
+  };
+
+  /* ---------- ringtone (synthesised) ---------- */
+  const ringtone = { ctx: null, master: null, timer: null };
+  function unlockAudio() {
+    try { if (!ringtone.ctx) ringtone.ctx = new (window.AudioContext || window.webkitAudioContext)(); if (ringtone.ctx.state === 'suspended') ringtone.ctx.resume(); } catch (e) {}
+  }
+  ['pointerdown', 'touchstart', 'keydown'].forEach(ev => document.addEventListener(ev, unlockAudio, { passive: true }));
+  function playChime(freq, t0, dur, vol) {
+    const c = ringtone.ctx;
+    [[1, 1], [2, 0.22], [3, 0.07]].forEach(([mult, amp]) => {
+      const o = c.createOscillator(), g = c.createGain(); o.type = 'sine'; o.frequency.value = freq * mult;
+      g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(vol * amp, t0 + 0.015); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+      o.connect(g); g.connect(ringtone.master); o.start(t0); o.stop(t0 + dur + 0.05);
+    });
+  }
+  function ringPhrase() {
+    const c = ringtone.ctx; if (!c || c.state !== 'running') return;
+    const t = c.currentTime + 0.05;
+    [0, 1.1].forEach(o => [[659.25, 0], [830.61, 0.17], [987.77, 0.34], [1318.51, 0.51]].forEach(([f, d], i) => playChime(f, t + o + d, i === 3 ? 0.9 : 0.55, 0.2)));
+  }
+  function startRingtone() {
+    stopRingtone(); unlockAudio(); const c = ringtone.ctx; if (!c) return;
+    ringtone.master = c.createGain(); ringtone.master.gain.value = 0.8; ringtone.master.connect(c.destination);
+    const go = () => { ringPhrase(); ringtone.timer = setInterval(ringPhrase, 3400); };
+    c.state === 'running' ? go() : c.resume().then(go).catch(() => {});
+  }
+  function stopRingtone() {
+    clearInterval(ringtone.timer); ringtone.timer = null;
+    if (ringtone.master && ringtone.ctx) { try { ringtone.master.gain.setTargetAtTime(0, ringtone.ctx.currentTime, 0.03); } catch (e) {} }
+    ringtone.master = null;
+  }
+
+  /* ---------- receiver ---------- */
+  function handleIncomingCall(conn) {
+    if (rtc.activeConn || rtc.incomingConn) { try { conn.close(); } catch (e) {} return; }   // busy
+    rtc.incomingConn = conn;
+    const meta = conn.metadata || {};
+    $id('incomingJobInfo').textContent = (meta.callerName || 'Colleague') + (meta.context ? ' • ' + meta.context : '') + ' • ' + (meta.type === 'voice' ? 'Voice' : 'Video');
+    $id('callJobId').textContent = meta.callerName || 'Colleague'; $id('callJobSite').textContent = meta.context || '';
+    $id('incomingCallAlert').classList.remove('hidden');
+    const buzz = () => { try { navigator.vibrate && navigator.vibrate([400, 200, 400]); } catch (e) {} };
+    buzz(); rtc.ringBuzz = setInterval(buzz, 2000);
+    try { if (document.hidden && 'Notification' in window && Notification.permission === 'granted') new Notification('24S incoming call', { body: $id('incomingJobInfo').textContent }); } catch (e) {}
+    startRingtone(); rtc.ringAuto = setTimeout(() => answerCall(false), RTC_CONFIG.ringTimeoutMs);
+    conn.on('close', () => { if (rtc.incomingConn === conn) { rtc.incomingConn = null; stopRinging(); } });
+  }
+  function stopRinging() {
+    clearInterval(rtc.ringBuzz); clearTimeout(rtc.ringAuto); stopRingtone();
+    $id('incomingCallAlert').classList.add('hidden'); try { navigator.vibrate && navigator.vibrate(0); } catch (e) {}
+  }
+  window.answerCall = async function (accept) {
+    const conn = rtc.incomingConn; rtc.incomingConn = null; stopRinging();
+    if (!conn) return; if (!accept) { try { conn.close(); } catch (e) {} return; }
+    const meta = conn.metadata || {}, type = meta.type === 'voice' ? 'voice' : 'video';
+    rtc.side = 'receiver'; resetCallUI(); cxOpen('callModal'); setCallStatus('Answering…', false);
+    const stream = await getMedia(type === 'video');
+    if (!stream) { try { conn.close(); } catch (e) {} return setCallStatus('Mic blocked. Allow permissions.', false); }
+    rtc.localStream = stream; attachStreams();
+    try { conn.answer(stream); } catch (e) { return endCall('Caller already hung up'); }
+    bindCall(conn, type, meta.callerName || 'Colleague');
+  };
+  window.endCall = function (reason) {
+    if (rtc.ending) return; rtc.ending = true;
+    clearTimeout(rtc.ringTimer); clearTimeout(rtc.iceTimer); clearInterval(rtc.timerId); stopMonitor(); releaseWake();
+    if (rtc.peer && rtc.dialErr) { try { rtc.peer.off('error', rtc.dialErr); } catch (e) {} rtc.dialErr = null; }
+    const c = rtc.activeConn; rtc.activeConn = null; if (c) { try { c.close(); } catch (e) {} }
+    releaseMedia();
+    $id('remoteVideo').srcObject = null; $id('localVideo').srcObject = null;
+    $id('selfView').classList.add('hidden'); $id('remotePlaceholder').classList.remove('hidden');
+    setCallStatus(typeof reason === 'string' ? reason : 'Call ended', false);
+    setTimeout(() => { cxClose('callModal'); rtc.ending = false; }, typeof reason === 'string' && reason.length > 24 ? 2200 : 700);
+  };
+  window.toggleMute = function () {
+    if (!rtc.localStream) return; rtc.muted = !rtc.muted;
+    rtc.localStream.getAudioTracks().forEach(t => t.enabled = !rtc.muted); paintToggles();
+  };
+  window.toggleVideo = function () {
+    const tracks = rtc.localStream ? rtc.localStream.getVideoTracks() : []; if (!tracks.length) return;
+    rtc.videoOff = !rtc.videoOff; tracks.forEach(t => t.enabled = !rtc.videoOff && RTC_CONFIG.levels[rtc.level].video); paintToggles();
+  };
+
+  /* ---------- call log + page ---------- */
+  function logCall(type, who) {
+    rtc.history.unshift({ type, who, at: new Date().toLocaleTimeString(), dir: rtc.side === 'caller' ? 'Outgoing' : 'Incoming' });
+    rtc.history = rtc.history.slice(0, 20); renderLog();
+  }
+  function renderLog() {
+    const el = $id('callLog'); if (!el || !rtc.history.length) return;
+    el.innerHTML = rtc.history.map(h => '<div class="flex justify-between border-b border-slate-100 pb-2 text-xs text-slate-600"><span><b class="text-slate-800">' +
+      escH(h.dir) + ' ' + (h.type === 'video' ? 'video' : 'voice') + '</b> • ' + escH(h.who) + '</span><span class="text-slate-400">' + escH(h.at) + '</span></div>').join('');
+  }
+  const SVG = p => '<svg class="cx-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + p + '</svg>';
+  const PH = SVG('<path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/>');
+  const VD = SVG('<path d="m22 8-6 4 6 4V8z"/><rect x="2" y="6" width="14" height="12" rx="2"/>');
+  const GO = SVG('<path d="M5 12h14M13 6l6 6-6 6"/>');
+  window.renderConnect = function (c) {
+    c.innerHTML = '<div class="fade-in space-y-6 max-w-4xl">' +
+      '<div class="cx-head"><div><h2 class="text-2xl font-black uppercase tracking-tight text-slate-800">Connect</h2><p class="cx-sub">Live Voice &amp; Video Channel</p><button onclick="nav(\'meetings\')" class="q24-link" style="margin-top:6px;font-size:12px;font-weight:800">&larr; Back to meetings</button></div>' +
+      '<span class="cx-live"><i></i><span id="peerStatus">connecting…</span></span></div>' +
+      '<div class="cx-hero"><div class="cx-rings" aria-hidden="true"><span></span><span></span><span></span></div><div class="cx-hero-body">' +
+      '<span class="cx-chip">' + PH + 'Call a colleague</span><h3 id="connectJobId" class="cx-job">Choose who to call</h3>' +
+      '<p id="connectJobSite" class="cx-site">Pick a colleague below, then start a voice or video call.</p></div></div>' +
+      '<div id="callTargetWrap">' + targetSelectHTML() + '</div>' +
+      '<div class="cx-actions"><button onclick="startCall(\'voice\')" class="cx-action"><span class="cx-ico">' + PH + '</span><span class="cx-act-t">Voice call</span><span class="cx-act-s">Fastest to connect</span><span class="cx-go">' + GO + '</span></button>' +
+      '<button onclick="startCall(\'video\')" class="cx-action cx-action--pri"><span class="cx-ico">' + VD + '</span><span class="cx-act-t">Video call</span><span class="cx-act-s">Live camera &bull; screen-friendly</span><span class="cx-go">' + GO + '</span></button></div>' +
+      '<div class="cx-tiles"><div class="cx-tile">' + SVG('<path d="M4 4h16v12H5.2L4 17.2V4z"/>') + '<div><b>Reason attached</b><span>Receiver sees who is calling and why</span></div></div>' +
+      '<div class="cx-tile">' + SVG('<path d="M3 12a9 9 0 0 1 18 0"/><path d="m12 12 4-4"/><circle cx="12" cy="12" r="1.5"/>') + '<div><b>Adaptive quality</b><span>Steps down on weak networks to stay connected</span></div></div>' +
+      '<div class="cx-tile">' + SVG('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>') + '<div><b>Online status</b><span>Colleagues must have the dashboard open to receive calls</span></div></div></div>' +
+      '<div class="cx-card"><div class="cx-card-h">' + PH + '<h4>Call log</h4></div><div id="callLog" class="space-y-3"><div class="cx-empty"><p>No calls logged this session.</p><span>Your calls will show up here.</span></div></div></div></div>';
+    renderLog(); setPeerStatus(rtc.peer && rtc.peer.open ? 'online' : 'connecting…', !!(rtc.peer && rtc.peer.open));
+    if (rtc.targetUid) setCallTarget(rtc.targetUid);
+    Promise.all([loadUsers(), refreshPresence()]).then(() => { const w = $id('callTargetWrap'); if (w) { w.innerHTML = targetSelectHTML(); if (rtc.targetUid) setCallTarget(rtc.targetUid); } });
+    rtc.started = true; initRTC();
+  };
+  setInterval(async () => {   // keep the colleague list and online status fresh while the Connect screen is open
+    const w = $id('callTargetWrap'); if (!w || document.hidden || rtc.activeConn) return;
+    const sel = w.querySelector('select'); if (sel && document.activeElement === sel) return;
+    await Promise.all([loadUsers(), refreshPresence()]);
+    const w2 = $id('callTargetWrap'); if (w2 && !(w2.querySelector('select') && document.activeElement === w2.querySelector('select'))) { w2.innerHTML = targetSelectHTML(); if (rtc.targetUid) setCallTarget(rtc.targetUid); }
+  }, 20000);
+
+  window.__q24 = { rtc, RTC_CONFIG, colleagues };
+  window.Connect24S = {
+    init() { rtc.started = true; initRTC(); loadUsers().then(refreshPresence); },
+    stop() {
+      rtc.started = false;
+      try { const u = me(), db = getDb(); if (u && db) db.collection(PEERS).doc(u.uid).delete().catch(() => {}); } catch (e) {}
+      destroyPeer(); stopRinging(); rtc.targetUid = null;
+    }
+  };
+  window.addEventListener('pagehide', () => { try { const u = me(), db = getDb(); if (u && db && rtc.started) db.collection(PEERS).doc(u.uid).delete(); } catch (e) {} });
+})();
+
+</script>
+<script id="connect24s-meetings">
+(function(){
+const Q=window.__q24;
+const state={get user(){var u=window.currentUser;return {name:(u&&(u.name||u.username))||'User'}},role:'management',get technicians(){return Q.colleagues().map(function(u){return {name:u.name||u.username,id:u.uid}})}};
+const fb={get ready(){try{return !!(firebase.auth().currentUser&&FirebaseService.getDb())}catch(e){return false}},get db(){return FirebaseService.getDb()}};
+const rtc=Q.rtc, RTC_CONFIG=Q.RTC_CONFIG;
+const ic=function(n,c,s){return '<svg class="ic'+(c?' '+c:'')+'" viewBox="0 0 24 24" fill="currentColor" stroke="none" style="width:1em;height:1em;display:inline-block;vertical-align:-.125em;'+(s||'')+'"><path d="M7 4.5v15l12-7.5z"/></svg>'};
+window.q24Notify=function(t,b){try{if('Notification' in window&&Notification.permission==='granted')new Notification(t,{body:b})}catch(e){}};
+window.q24Toast=function(m,o){o=o||{};var d=document.createElement('div');d.style.cssText='position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:10050;background:#0b2a6f;color:#fff;padding:12px 16px;border-radius:12px;font-size:13px;font-weight:600;box-shadow:0 12px 30px rgba(0,0,0,.3);display:flex;gap:12px;align-items:center;max-width:92vw';
+ var s=document.createElement('span');s.textContent=m;d.appendChild(s);
+ if(o.label&&o.action){var b=document.createElement('button');b.textContent=o.label;b.style.cssText='background:#fff;color:#1d4ed8;border-radius:999px;padding:5px 12px;font-weight:800;font-size:12px';b.onclick=function(){d.remove();o.action()};d.appendChild(b)}
+ document.body.appendChild(d);setTimeout(function(){d.remove()},o.ms||3500)};
+(function () {
+  'use strict';
+  const LS = (k, d) => { try { const v = JSON.parse(localStorage.getItem('24s_' + k)); return v == null ? d : v; } catch (e) { return d; } };
+  const SV = (k, v) => { try { localStorage.setItem('24s_' + k, JSON.stringify(v)); } catch (e) {} };
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const me = () => (state.user && state.user.name) || 'Manager';
+  const toast = (m, o) => (window.q24Toast ? window.q24Toast(m, o) : console.log(m));
+  const rid = n => Array.from({ length: n }, () => 'abcdefghjkmnpqrstuvwxyz23456789'[Math.floor(Math.random() * 31)]).join('');
+  const pad = n => String(n).padStart(2, '0');
+  const cloudSet = (id, d) => { try { if (fb.ready && fb.db) fb.db.collection('meetings').doc(id).set(d, { merge: true }).catch(() => {}); } catch (e) {} };
+  const cloudDel = id => { try { if (fb.ready && fb.db) fb.db.collection('meetings').doc(id).delete().catch(() => {}); } catch (e) {} };
+  let MEET = LS('meetings', []), PAST = LS('mtgrec', []);
+  const pid = c => '24smtg' + c;
+
+  /* ---------- styles ---------- */
+  const st = document.createElement('style');
+  st.textContent = `
+  #q24Meet{position:fixed;inset:0;z-index:10001;background:#eef0f3;display:none;flex-direction:column;color:#1f2937}
+  #q24Meet.on{display:flex}
+  .qm-top{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid rgba(0,0,0,.1);font-size:12px;background:#fff}
+  .qm-main{flex:1;display:flex;min-height:0}
+  .qm-grid{flex:1;display:grid;gap:8px;padding:10px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));grid-auto-rows:minmax(160px,1fr);overflow:auto}
+  .qm-tile{position:relative;background:#dfe3e8;border-radius:12px;overflow:hidden;border:2px solid transparent}
+  .qm-tile.speak{border-color:#00ff88}
+  .qm-tile video{width:100%;height:100%;object-fit:cover;background:#cfd4da}
+  .qm-tile .qm-av{position:absolute;inset:0;display:none;align-items:center;justify-content:center;font-size:42px;font-weight:900;background:#dfe3e8;color:#2563eb}
+  .qm-tile.nocam .qm-av{display:flex}
+  .qm-tile .qm-nm{position:absolute;left:8px;bottom:6px;background:rgba(255,255,255,.88);color:#111827;border-radius:6px;padding:2px 8px;font-size:11px;font-weight:800}
+  .qm-side{width:320px;max-width:100%;border-left:1px solid rgba(0,0,0,.1);display:none;flex-direction:column;background:#ffffff}
+  .qm-side.on{display:flex}
+  .qm-tabs{display:flex}.qm-tabs button{flex:1;padding:10px;font-size:10px;font-weight:900;text-transform:uppercase;border-bottom:2px solid transparent}
+  .qm-tabs button.on{border-color:#2563eb;color:#2563eb}
+  .qm-pane{flex:1;overflow:auto;padding:10px;font-size:12px;display:none}.qm-pane.on{display:block}
+  .qm-bar{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;padding:12px;border-top:1px solid rgba(0,0,0,.1);background:#fff}
+  .qm-b{min-width:56px;height:48px;border-radius:24px;padding:0 16px;background:#e5e7eb;color:#1f2937;font-size:11px;font-weight:900}
+  .qm-b.off{background:#2563eb;color:#fff}.qm-b.act{background:#00a86b;color:#fff}.qm-b.end{background:#1e40af;color:#fff}
+  .qm-msg{margin-bottom:8px}.qm-msg b{color:#2563eb}
+  #meetings{background:transparent!important;color:#0f172a!important;border-radius:0;padding:0!important;box-shadow:none!important}
+  #meetings h2,#meetings h3,#meetings b,#meetings label{color:#0f172a!important}
+  #meetings [class*="text-white"]{color:#475569!important}
+  #meetings .q24-h{color:#1d4ed8!important}
+  #meetings .q24-card{background:#f8fafc!important;border:1px solid #cbd5e1!important;border-left:3px solid #2563eb!important}
+  #meetings .q24-in{background:#fff!important;color:#0f172a!important;border:1px solid #94a3b8!important}
+  #meetings .q24-lbl{color:#475569!important}
+  #meetings .q24-btn{background:#fff!important;color:#1d4ed8!important;border:1px solid #2563eb!important}
+  #meetings .q24-btn.on{background:#2563eb!important;color:#fff!important}
+  #meetings .q24-link{color:#1d4ed8!important}
+  #meetings .blinking-red-dot{background:#2563eb!important}
+  #meetings *{--tw-ring-color:#2563eb}
+  @media(max-width:800px){.qm-side{position:absolute;right:0;top:46px;bottom:74px;z-index:3}}
+  `;
+  st.textContent += `
+  #meetings .qm-join .q24-btn{white-space:nowrap;flex:0 0 auto;min-width:76px;padding:0 20px}
+  #meetings #qmInv{grid-template-columns:1fr 1fr;gap:4px 12px}
+  #meetings #qmInv label{display:flex;align-items:center;gap:8px;min-height:36px;text-transform:none;letter-spacing:0;font-size:12px;font-weight:700}
+  #meetings #qmInv input{width:auto;flex:0 0 auto}
+  #meetings .q24-card .flex.flex-wrap .q24-btn{flex:1 1 auto}
+  #q24Meet{height:100vh;height:100dvh;padding-top:env(safe-area-inset-top)}
+  #q24Meet .qm-bar{padding-bottom:calc(12px + env(safe-area-inset-bottom))}
+  @media(max-width:480px){#meetings #qmInv{grid-template-columns:1fr}#q24Meet .qm-b{min-width:0;flex:1 1 28%;padding:0 10px}}`;
+  document.head.appendChild(st);
+
+  /* ---------- nav + lobby pane ---------- */
+  const pane = document.createElement('div'); pane.id = 'meetings'; pane.className = 'space-y-6 relative z-10 manager-only'; 
+  
+  const names = () => [...new Set((state.technicians || []).map(t => t && (t.name || t.displayName)).filter(Boolean))].sort();
+  const fmt = iso => new Date(iso).toLocaleString([], { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+  const link = c => location.origin + location.pathname + '?meet=' + c;
+
+  function lobby() {
+    const now = Date.now(), up = MEET.filter(m => new Date(m.start).getTime() + m.duration * 6e4 > now).sort((a, b) => a.start.localeCompare(b.start));
+    const d = new Date(now + 36e5); d.setMinutes(0);
+    const local = d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + 'T' + pad(d.getHours()) + ':00';
+    pane.innerHTML = '<div class="cx-head"><div><h2 class="text-3xl font-black uppercase tracking-tighter">Connect</h2><p class="cx-sub">Video &bull; Chat &bull; Screen share &bull; Minutes</p></div><span class="cx-live"><i></i>Ready to meet</span></div>' +
+      '<div class="cx-hero qm-hero"><div class="cx-rings" aria-hidden="true"><span></span><span></span><span></span></div><div class="cx-hero-body"><span class="cx-chip">Start or join</span><h3 class="cx-job">Meet with your team</h3><p class="cx-site">Start an instant meeting or enter a code to join.</p>' +
+      '<div class="qm-hero-row"><button class="q24-btn on qm-now" onclick="qmNow()">'+ic('play','','margin-right:.35em')+'Meet now</button><div class="qm-join"><input id="qmCode" class="q24-in" placeholder="Meeting code e.g. k7m2xq"><button class="q24-btn on" onclick="qmJoinCode()">Join</button></div></div></div></div><button class="qm-fab" title="Connect" aria-label="Open Connect" onclick="nav(\'connect\')"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg></button>' +
+      '<div class="q24-card"><p class="q24-h">Schedule a meeting</p><input id="qmTitle" class="q24-in" placeholder="Title (e.g. Weekly ops review)">' +
+      '<div class="grid grid-cols-2 gap-2"><div><label class="q24-lbl">Start</label><input type="datetime-local" id="qmStart" class="q24-in" value="' + local + '"></div><div><label class="q24-lbl">Duration (min)</label><input type="number" id="qmDur" class="q24-in" value="30" min="5" step="5"></div></div>' +
+      '<label class="q24-lbl">Invite team</label><div id="qmInv" class="grid grid-cols-2 gap-1 text-xs">' + (names().length ? names().map(n => '<label><input type="checkbox" value="' + esc(n) + '"> ' + esc(n) + '</label>').join('') : '<span class="text-white/40">No technicians synced</span>') + '</div>' +
+      '<input id="qmGuests" class="q24-in mt-2" placeholder="Other guests (names or emails, comma separated)"><textarea id="qmAgenda" rows="2" class="q24-in mt-2" placeholder="Agenda"></textarea>' +
+      '<button class="q24-btn on w-full mt-2" onclick="qmSchedule()">Schedule</button></div>' +
+      '<div><p class="q24-h">Upcoming</p><div class="space-y-2">' + (up.length ? up.map(m => '<div class="q24-card"><div class="flex justify-between gap-2"><div class="text-xs"><b class="text-sm">' + esc(m.title) + '</b><br><span class="text-white/50">' + fmt(m.start) + ' • ' + m.duration + ' min • host ' + esc(m.host) + ' • code <b>' + esc(m.code) + '</b></span>' +
+        (m.invitees && m.invitees.length ? '<br><span class="text-white/50">Invited: ' + esc(m.invitees.join(', ')) + '</span>' : '') + (m.agenda ? '<br><span class="text-white/60">' + esc(m.agenda) + '</span>' : '') + '</div></div>' +
+        '<div class="flex flex-wrap gap-2 mt-2"><button class="q24-btn on" style="padding:8px 14px" onclick="qmJoin(\'' + m.code + '\')">' + (m.host === me() ? 'Start' : 'Join') + '</button><button class="q24-btn" style="padding:8px 14px" onclick="qmCopy(\'' + m.code + '\')">Copy link</button><button class="q24-btn" style="padding:8px 14px" onclick="qmIcs(\'' + m.code + '\')">Add to calendar</button>' +
+        (m.host === me() ? '<button class="q24-btn" style="padding:8px 14px" onclick="qmDel(\'' + m.code + '\')">Cancel</button>' : '') + '</div></div>').join('') : '<p class="text-xs text-white/40">Nothing scheduled.</p>') + '</div></div>' +
+      '<div><p class="q24-h">Past meetings &amp; minutes</p><div class="space-y-2">' + (PAST.length ? PAST.slice(0, 15).map((p, i) => '<div class="q24-card flex justify-between items-center gap-2 text-xs"><span><b>' + esc(p.title) + '</b><br><span class="text-white/50">' + fmt(p.at) + ' • ' + p.people.length + ' people • ' + p.mins + ' min</span></span><button class="q24-link" onclick="qmMinutes(' + i + ')">Download minutes</button></div>').join('') : '<p class="text-xs text-white/40">Minutes appear here after you leave a meeting.</p>') + '</div></div>';
+  }
+  window.qmCopy = c => { try { navigator.clipboard.writeText(link(c)); toast('Meeting link copied'); } catch (e) { prompt('Copy link:', link(c)); } };
+  window.qmJoinCode = () => { const c = document.getElementById('qmCode').value.trim().toLowerCase().replace(/[^a-z0-9]/g, ''); if (c.length < 4) return toast('Enter the meeting code'); qmJoin(c); };
+  window.qmSchedule = function () {
+    const g = id => document.getElementById(id).value.trim(), title = g('qmTitle') || 'Team meeting', start = g('qmStart');
+    if (!start) return toast('Pick a start time');
+    const inv = [...document.querySelectorAll('#qmInv input:checked')].map(i => i.value).concat(g('qmGuests').split(',').map(s => s.trim()).filter(Boolean));
+    const m = { id: rid(8), code: rid(6), title, start: new Date(start).toISOString(), duration: +g('qmDur') || 30, host: me(), invitees: inv, agenda: g('qmAgenda'), createdAt: new Date().toISOString() };
+    MEET.push(m); SV('meetings', MEET); cloudSet(m.code, m); toast('Meeting scheduled — code ' + m.code); lobby();
+  };
+  window.qmDel = c => { MEET = MEET.filter(m => m.code !== c); SV('meetings', MEET); cloudDel(c); lobby(); };
+  window.qmIcs = function (c) {
+    const m = MEET.find(x => x.code === c); if (!m) return; const f = d => new Date(d).toISOString().replace(/[-:]/g, '').replace(/\.\d+/, '');
+    const ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'BEGIN:VEVENT', 'UID:' + m.code + '@24s', 'DTSTAMP:' + f(Date.now()), 'DTSTART:' + f(m.start), 'DTEND:' + f(new Date(m.start).getTime() + m.duration * 6e4), 'SUMMARY:' + m.title, 'DESCRIPTION:Join: ' + link(m.code) + '\\n' + (m.agenda || ''), 'URL:' + link(m.code), 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([ics], { type: 'text/calendar' })); a.download = m.title.replace(/\W+/g, '_') + '.ics'; a.click();
+  };
+  window.qmMinutes = function (i) {
+    const p = PAST[i]; if (!p) return;
+    const t = 'MINUTES — ' + p.title + '\nDate: ' + new Date(p.at).toLocaleString() + '\nDuration: ' + p.mins + ' min\nHost: ' + p.host + '\nAttendees: ' + p.people.join(', ') + '\n\nNOTES\n' + (p.notes || '(none)') + '\n\nCHAT\n' + (p.chat.map(c => '[' + c.t + '] ' + c.n + ': ' + c.m).join('\n') || '(none)');
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([t], { type: 'text/plain' })); a.download = 'minutes_' + p.title.replace(/\W+/g, '_') + '.txt'; a.click();
+  };
+
+  /* ---------- call overlay ---------- */
+  const ov = document.createElement('div'); ov.id = 'q24Meet';
+  ov.innerHTML = '<div class="qm-top"><div class="qm-title"><span class="qm-badge"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/></svg>Secure &bull; WebRTC</span><b id="qmT"></b></div><div class="flex gap-2 items-center"><span class="qm-info" id="qmInfo"></span><button class="q24-link qm-copy" onclick="qmCopyCur()">Copy invite link</button></div></div>' +
+    '<div class="qm-main"><div class="qm-grid" id="qmGrid"></div><div class="qm-side" id="qmSide"><div class="qm-tabs"><button class="on" data-p="qmChat" onclick="qmTab(this)">Chat</button><button data-p="qmPeople" onclick="qmTab(this)">People</button><button data-p="qmNotes" onclick="qmTab(this)">Notes</button></div>' +
+    '<div class="qm-pane on" id="qmChat"><div id="qmMsgs"></div></div><div class="qm-pane" id="qmPeople"></div><div class="qm-pane" id="qmNotes"><textarea id="qmNoteTxt" class="q24-in" rows="14" placeholder="Meeting notes / actions (saved to minutes)"></textarea></div>' +
+    '<div class="flex gap-2 p-2 border-t border-white/10" id="qmChatIn"><input id="qmIn" class="q24-in" placeholder="Message everyone" onkeydown="if(event.key===\'Enter\')qmSend()"><button class="q24-btn on" style="min-width:60px" onclick="qmSend()">Send</button></div></div></div>' +
+    '<div class="qm-bar"><button class="qm-b" id="qmMic" onclick="qmToggle(\'mic\')"><svg class="q24-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4"/></svg>Mic</button><button class="qm-b" id="qmCam" onclick="qmToggle(\'cam\')"><svg class="q24-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3z"/><circle cx="12" cy="13" r="3"/></svg>Camera</button><button class="qm-b" id="qmShare" onclick="qmShare()"><svg class="q24-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>Share</button><button class="qm-b" id="qmHand" onclick="qmHand()"><svg class="q24-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-4 0M14 10V4a2 2 0 0 0-4 0v2M10 10.5V6a2 2 0 0 0-4 0v8"/><path d="M18 8a2 2 0 0 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.9-5.9-2.4L3.4 16a2 2 0 0 1 3.2-2.4L8 15"/></svg>Hand</button><button class="qm-b" onclick="qmSide()"><svg class="q24-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Chat / People</button><button class="qm-b" id="qmMuteAll" style="display:none" onclick="qmMuteAll()"><svg class="q24-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="m22 9-6 6M16 9l6 6"/></svg>Mute all</button><button class="qm-b end" onclick="qmLeave()">Leave</button></div>';
+  document.body.appendChild(ov);
+  const $ = id => document.getElementById(id);
+
+  let M = null; // active meeting session
+  window.qmNow = function () { const m = { id: rid(8), code: rid(6), title: 'Instant meeting', start: new Date().toISOString(), duration: 30, host: me(), invitees: [], agenda: '' }; MEET.push(m); SV('meetings', MEET); cloudSet(m.code, m); qmJoin(m.code); };
+  let joining = false;
+  window.qmJoin = async function (code) {
+    if (M || joining) return;
+    joining = true;
+    const meta = MEET.find(m => m.code === code) || { code, title: 'Meeting ' + code, host: '' };
+    const isHost = meta.host === me() && !!MEET.find(m => m.code === code);
+    let stream = null;
+    try { stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true }); }
+    catch (e) { try { stream = await navigator.mediaDevices.getUserMedia({ audio: true }); toast('Camera unavailable — joined with audio only'); } catch (e2) { stream = new MediaStream(); toast('No mic/camera access — joined as listener'); } }
+    M = { code, meta, isHost, stream, cam: stream.getVideoTracks()[0] || null, peers: {}, calls: {}, conns: {}, chat: [], people: new Set([me()]), start: Date.now(), hand: false, screen: null, myId: pid(code) + (isHost ? 'h' : rid(5)) };
+    joining = false; ov.classList.add('on'); $('qmT').textContent = meta.title; $('qmMsgs').innerHTML = ''; $('qmGrid').innerHTML = ''; $('qmMuteAll').style.display = isHost ? '' : 'none';
+    addTile('me', me() + ' (you)', stream, true); paintBtns(); M.timer = setInterval(info, 1000); info();
+    startPeer(0);
+  };
+  function startPeer(n) {
+    const p = new Peer(M.myId, Object.assign({ debug: 1 }, (typeof RTC_CONFIG !== 'undefined' && RTC_CONFIG.server) || {}, { config: { iceServers: (rtc.iceServers || RTC_CONFIG.iceServers), iceCandidatePoolSize: 4 } }));
+    M.peer = p;
+    p.on('open', () => { if (!M.isHost) hostConn(); });
+    p.on('call', c => { c.answer(M.stream); wireCall(c); });
+    p.on('connection', c => wireConn(c));
+    p.on('error', e => {
+      if (!M || M.peer !== p) return;
+      if (e.type === 'unavailable-id') {
+        // stale registration from a previous session/tab: wait for it to expire, then retry
+        if (n >= 10) { toast('Could not start the meeting. Close other tabs with this meeting and try again in a minute.'); return qmLeave(true); }
+        if (n === 0) toast(M.isHost ? 'Reconnecting as host…' : 'Reconnecting…');
+        if (!M.isHost) M.myId = pid(M.code) + rid(5);
+        try { p.destroy(); } catch (x) {}
+        setTimeout(() => { if (M) startPeer(n + 1); }, 4000);
+      } else if (e.type === 'peer-unavailable') {
+        if (M.isHost) return;
+        M.waits = (M.waits || 0) + 1;
+        if (M.waits > 30) { toast('The host has not started this meeting. Try again later.'); return qmLeave(true); }
+        if (M.waits === 1) toast('Waiting for the host to start the meeting…', { ms: 8000 });
+        setTimeout(() => { if (M && M.peer === p && p.open) hostConn(); }, 3000);
+      } else console.warn('meeting peer', e);
+    });
+  }
+  function hostConn() { const c = M.peer.connect(pid(M.code) + 'h', { reliable: true }); wireConn(c); }
+  function say(c, o) { try { if (c.open) c.send(o); } catch (e) {} }
+  function bcast(o) { Object.values(M.conns).forEach(c => say(c, o)); }
+  function wireConn(c) {
+    const opened = () => { M.conns[c.peer] = c; say(c, { t: 'hello', n: me(), mic: micOn(), cam: camOn(), hand: M.hand }); };
+    if (c.open) opened(); else c.on('open', opened);
+    c.on('data', d => onData(c, d)); c.on('close', () => drop(c.peer)); c.on('error', () => {});
+  }
+  function onData(c, d) {
+    const id = c.peer, P = M.peers[id] = M.peers[id] || {};
+    if (d.t === 'hello') {
+      P.n = d.n; P.mic = d.mic; P.cam = d.cam; P.hand = d.hand; M.people.add(d.n); upd(id);
+      if (M.isHost) { const list = Object.keys(M.conns).filter(x => x !== id); say(c, { t: 'peers', list }); }
+      sys(d.n + ' joined');
+    } else if (d.t === 'peers') {
+      d.list.concat(c.peer === pid(M.code) + 'h' ? [c.peer] : []).forEach(x => { if (x === M.myId || M.calls[x]) return; if (x !== c.peer) wireConn(M.peer.connect(x, { reliable: true })); wireCall(M.peer.call(x, M.stream)); });
+    } else if (d.t === 'chat') { msg(d.n, d.m, d.at); }
+    else if (d.t === 'state') { P.mic = d.mic; P.cam = d.cam; P.hand = d.hand; upd(id); }
+    else if (d.t === 'muteall') { if (micOn()) { setMic(false); toast('The host muted everyone'); } }
+    else if (d.t === 'end') { toast('The host ended the meeting'); qmLeave(); }
+  }
+  function wireCall(c) {
+    M.calls[c.peer] = c;
+    c.on('stream', s => { const P = M.peers[c.peer] || (M.peers[c.peer] = {}); addTile(c.peer, P.n || 'Participant', s, false); watchSpeak(c.peer, s); });
+    c.on('close', () => drop(c.peer)); c.on('error', () => {});
+  }
+  function drop(id) { const n = M && M.peers[id] && M.peers[id].n; if (!M) return; delete M.conns[id]; delete M.calls[id]; const t = $('t_' + id); if (t) t.remove(); delete M.peers[id]; if (n) sys(n + ' left'); people(); }
+
+  /* tiles / people */
+  function addTile(id, name, stream, self) {
+    let t = $('t_' + id); if (!t) { t = document.createElement('div'); t.id = 't_' + id; t.className = 'qm-tile'; t.innerHTML = '<video autoplay playsinline' + (self ? ' muted' : '') + '></video><div class="qm-av"><span></span></div><div class="qm-nm"></div>'; $('qmGrid').appendChild(t); }
+    t.querySelector('video').srcObject = stream; t.querySelector('.qm-av span').textContent = (name || '?').trim()[0].toUpperCase(); t.querySelector('.qm-nm').textContent = name;
+    if (self) t.dataset.self = 1; people(); upd(id);
+  }
+  function upd(id) {
+    const t = $('t_' + id), P = id === 'me' ? { n: me(), mic: micOn(), cam: camOn(), hand: M.hand } : M.peers[id]; if (!t || !P) return;
+    t.classList.toggle('nocam', P.cam === false || (id === 'me' && !camOn())); t.querySelector('.qm-nm').innerHTML = esc(P.n || 'Participant') + (id === 'me' ? ' (you)' : '') + (P.mic === false ? ' <svg class="q24-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="m22 9-6 6M16 9l6 6"/></svg>' : '') + (P.hand ? ' <svg class="q24-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-4 0M14 10V4a2 2 0 0 0-4 0v2M10 10.5V6a2 2 0 0 0-4 0v8"/><path d="M18 8a2 2 0 0 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.9-5.9-2.4L3.4 16a2 2 0 0 1 3.2-2.4L8 15"/></svg>' : ''); people();
+  }
+  function people() {
+    if (!M) return; const rows = [['me', me() + ' (you)', micOn(), M.hand]].concat(Object.keys(M.peers).map(k => [k, M.peers[k].n || 'Participant', M.peers[k].mic, M.peers[k].hand]));
+    $('qmPeople').innerHTML = '<p class="q24-h">In this meeting (' + rows.length + ')</p>' + rows.map(r => '<div class="mb-2">' + esc(r[1]) + (r[2] === false ? ' <svg class="q24-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="m22 9-6 6M16 9l6 6"/></svg>' : '') + (r[3] ? ' <svg class="q24-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-4 0M14 10V4a2 2 0 0 0-4 0v2M10 10.5V6a2 2 0 0 0-4 0v8"/><path d="M18 8a2 2 0 0 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.9-5.9-2.4L3.4 16a2 2 0 0 1 3.2-2.4L8 15"/></svg>' : '') + '</div>').join('');
+  }
+  function watchSpeak(id, s) {
+    try { if (!s.getAudioTracks().length) return; const ctx = new (window.AudioContext || window.webkitAudioContext)(), a = ctx.createAnalyser(), src = ctx.createMediaStreamSource(s); a.fftSize = 256; src.connect(a); const b = new Uint8Array(a.frequencyBinCount);
+      const iv = setInterval(() => { const t = $('t_' + id); if (!t || !M) { clearInterval(iv); ctx.close(); return; } a.getByteFrequencyData(b); t.classList.toggle('speak', b.reduce((x, y) => x + y, 0) / b.length > 18); }, 400); } catch (e) {}
+  }
+
+  /* controls */
+  const micTrack = () => M && M.stream.getAudioTracks()[0], camTrack = () => M && M.stream.getVideoTracks()[0];
+  const micOn = () => !!(micTrack() && micTrack().enabled), camOn = () => !!(camTrack() && camTrack().enabled);
+  function setMic(v) { if (micTrack()) micTrack().enabled = v; paintBtns(); share(); upd('me'); }
+  function paintBtns() { if (!M) return; $('qmMic').classList.toggle('off', !micOn()); $('qmMic').innerHTML = micOn() ? '<svg class="q24-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4"/></svg>Mute' : '<svg class="q24-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="m22 9-6 6M16 9l6 6"/></svg>Unmute'; $('qmCam').classList.toggle('off', !camOn()); $('qmCam').innerHTML = camOn() ? '<svg class="q24-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3z"/><circle cx="12" cy="13" r="3"/></svg>Camera off' : '<svg class="q24-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3z"/><circle cx="12" cy="13" r="3"/></svg>Camera on'; $('qmShare').classList.toggle('act', !!M.screen); $('qmHand').classList.toggle('act', M.hand); }
+  function share() { bcast({ t: 'state', mic: micOn(), cam: camOn(), hand: M.hand }); }
+  window.qmToggle = function (k) { if (!M) return; if (k === 'mic') { if (!micTrack()) return toast('No microphone available'); setMic(!micOn()); } else { if (!camTrack()) return toast('No camera available'); camTrack().enabled = !camTrack().enabled; paintBtns(); share(); upd('me'); } };
+  window.qmHand = function () { M.hand = !M.hand; paintBtns(); share(); upd('me'); };
+  window.qmMuteAll = function () { bcast({ t: 'muteall' }); toast('Asked everyone to mute'); };
+  window.qmShare = async function () {
+    if (!M) return;
+    if (M.screen) return stopShare();
+    try {
+      const s = await navigator.mediaDevices.getDisplayMedia({ video: true }), tr = s.getVideoTracks()[0]; M.screen = s;
+      Object.values(M.calls).forEach(c => { const snd = c.peerConnection && c.peerConnection.getSenders().find(x => x.track && x.track.kind === 'video'); if (snd) snd.replaceTrack(tr); });
+      $('t_me').querySelector('video').srcObject = s; $('t_me').classList.remove('nocam'); tr.onended = stopShare; paintBtns(); bcast({ t: 'chat', n: 'System', m: me() + ' is sharing their screen', at: new Date().toLocaleTimeString() });
+    } catch (e) { toast('Screen sharing cancelled or not supported on this device'); }
+  };
+  function stopShare() {
+    if (!M || !M.screen) return; M.screen.getTracks().forEach(t => t.stop()); M.screen = null; const cam = camTrack();
+    Object.values(M.calls).forEach(c => { const snd = c.peerConnection && c.peerConnection.getSenders().find(x => x.track && x.track.kind === 'video'); if (snd && cam) snd.replaceTrack(cam); });
+    $('t_me').querySelector('video').srcObject = M.stream; paintBtns(); upd('me');
+  }
+  window.qmSide = () => $('qmSide').classList.toggle('on');
+  window.qmTab = b => { document.querySelectorAll('.qm-tabs button').forEach(x => x.classList.remove('on')); b.classList.add('on'); document.querySelectorAll('.qm-pane').forEach(p => p.classList.remove('on')); $(b.dataset.p).classList.add('on'); $('qmChatIn').style.display = b.dataset.p === 'qmChat' ? '' : 'none'; };
+  function msg(n, m, at) { M.chat.push({ n, m, t: at || new Date().toLocaleTimeString() }); const d = document.createElement('div'); d.className = 'qm-msg'; d.innerHTML = '<b>' + esc(n) + '</b> <span class="text-white/30 text-[10px]">' + esc(at || new Date().toLocaleTimeString()) + '</span><br>' + esc(m); $('qmMsgs').appendChild(d); d.scrollIntoView(); if (!$('qmSide').classList.contains('on') && n !== me()) toast(n + ': ' + m); }
+  function sys(m) { if (M) msg('System', m); }
+  window.qmSend = function () { const i = $('qmIn'), m = i.value.trim(); if (!m || !M) return; i.value = ''; const at = new Date().toLocaleTimeString(); msg(me(), m, at); bcast({ t: 'chat', n: me(), m, at }); };
+  window.qmCopyCur = () => M && qmCopy(M.code);
+  function info() { if (!M) return; const s = Math.floor((Date.now() - M.start) / 1000); $('qmInfo').textContent = '• code ' + M.code + ' • ' + pad(Math.floor(s / 60)) + ':' + pad(s % 60) + ' • ' + (Object.keys(M.peers).length + 1) + ' in call'; }
+  window.qmLeave = function (silent) {
+    if (!M) return; const m = M; M = null; clearInterval(m.timer);
+    if (m.isHost && !silent) Object.values(m.conns).forEach(c => say(c, { t: 'end' }));
+    if (!silent) { PAST.unshift({ title: m.meta.title, host: m.meta.host || me(), at: new Date(m.start).toISOString(), mins: Math.max(1, Math.round((Date.now() - m.start) / 6e4)), people: [...m.people], notes: $('qmNoteTxt').value, chat: m.chat }); PAST = PAST.slice(0, 40); SV('mtgrec', PAST); const r0 = PAST[0]; r0.id = rid(10); try { if (fb.ready && fb.db) fb.db.collection('meetingRecords').doc(r0.id).set(r0).catch(() => {}); } catch (e) {} }
+    try { if (m.screen) m.screen.getTracks().forEach(t => t.stop()); m.stream.getTracks().forEach(t => t.stop()); } catch (e) {}
+    setTimeout(() => { try { m.peer.destroy(); } catch (e) {} }, 300);
+    ov.classList.remove('on'); $('qmGrid').innerHTML = ''; $('qmNoteTxt').value = ''; $('qmSide').classList.remove('on');
+    if (pane.offsetParent !== null) lobby();
+  };
+
+  /* ---------- wiring: tab, reminders, link join, cloud sync ---------- */
+  window.renderMeetings = function (c) { c.innerHTML = ''; c.appendChild(pane); lobby(); };
+  const reminded = {};
+  setInterval(() => {
+    if (state.role !== 'management') return; const now = Date.now();
+    MEET.forEach(m => { const t = new Date(m.start).getTime(), mine = m.host === me() || (m.invitees || []).includes(me());
+      if (mine && !reminded[m.code] && t - now < 5 * 6e4 && t - now > -m.duration * 6e4 && !M) { reminded[m.code] = 1; toast('Meeting starting: ' + m.title, { label: 'Join', action: () => qmJoin(m.code), ms: 20000 }); if (window.q24Notify) window.q24Notify('Meeting starting soon', m.title); } });
+  }, 30000);
+  let synced = false;
+  setInterval(() => {
+    if (synced || !fb.ready || !fb.db) return; synced = true;
+    try { fb.db.collection('meetingRecords').orderBy('at', 'desc').limit(40).onSnapshot(s => { PAST = s.docs.map(d => d.data()); SV('mtgrec', PAST); if (pane.offsetParent !== null) lobby(); }, () => {}); } catch (e) {}
+    try { fb.db.collection('meetings').onSnapshot(s => {
+      const rows = s.docs.map(d => d.data()), known = new Set(MEET.map(m => m.code));
+      rows.forEach(r => { if (!known.has(r.code) && state.role === 'management' && (r.invitees || []).includes(me())) { toast('You were invited: ' + r.title + ' (' + fmt(r.start) + ')'); if (window.q24Notify) window.q24Notify('Meeting invite', r.title + ' • ' + fmt(r.start)); } });
+      MEET = rows; SV('meetings', MEET); if (pane.offsetParent !== null) lobby();
+    }, () => {}); } catch (e) {}
+  }, 2000);
+  const want = new URLSearchParams(location.search).get('meet');
+  if (want) { const iv = setInterval(() => { if (window.currentUser) { clearInterval(iv); nav('meetings'); setTimeout(() => qmJoin(want.toLowerCase()), 400); } }, 1500); setTimeout(() => clearInterval(iv), 120000); }
+  window.addEventListener('beforeunload', () => { if (M) { try { M.peer.destroy(); } catch (e) {} } });
+})();
+
+})();
 </script>
 </body>
 </html>
