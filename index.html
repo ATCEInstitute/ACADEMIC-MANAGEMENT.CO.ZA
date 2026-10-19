@@ -172,6 +172,28 @@ return ce.apply(console,arguments)};
             #setupResult table { min-width: 38rem; }
         }
 
+
+        /* ---- iPhone / small-screen fit (393px and below) ---- */
+        html { -webkit-text-size-adjust: 100%; }
+        body { overflow-x: hidden; }
+        @media (max-width: 640px) {
+            #app { min-height: 100dvh; }
+            #sidebar { height: 100dvh; width: min(80vw, 18rem); padding-bottom: env(safe-area-inset-bottom); overflow-y: auto; }
+            header.sticky { padding-top: max(.5rem, env(safe-area-inset-top)); padding-left: max(.75rem, env(safe-area-inset-left)); padding-right: max(.75rem, env(safe-area-inset-right)); }
+            #mainContent { padding: .75rem .75rem calc(1rem + env(safe-area-inset-bottom)); max-width: 100vw; }
+            #mainContent table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; white-space: nowrap; max-width: 100%; }
+            #mainContent .grid { gap: .6rem; }
+            #mainContent .grid-cols-3, #mainContent .md\:grid-cols-3, #mainContent .lg\:grid-cols-3, #mainContent .lg\:grid-cols-4, #mainContent .md\:grid-cols-4 { grid-template-columns: repeat(2, minmax(0,1fr)); }
+            input, select, textarea { font-size: 16px !important; min-height: 44px; }
+            button, [onclick] { touch-action: manipulation; }
+            button { min-height: 40px; }
+            #programmeModal > div:last-child { max-width: 100%; padding-bottom: env(safe-area-inset-bottom); }
+            #nsiFull { padding: max(.75rem, env(safe-area-inset-top)) .75rem calc(1rem + env(safe-area-inset-bottom)) !important; }
+            .flex-wrap > * { max-width: 100%; }
+            h2 { font-size: 1.1rem; }
+            img, canvas, svg { max-width: 100%; }
+        }
+
         @media (max-height: 700px) {
             #loginScreen { align-items: flex-start; }
             .login-shell { margin: 0 auto; }
@@ -2383,7 +2405,7 @@ c.innerHTML='<div class="fade-in">'+
 '<div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">'+
 '<div class="kpi-card kpi-orange p-5 card-hover"><div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Registered Students</div><div class="text-2xl font-extrabold text-gray-900">'+allStudents.length+'</div></div>'+
 '<div class="kpi-card kpi-blue p-5 card-hover"><div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Total Enrolment</div><div class="text-2xl font-extrabold text-gray-900">'+enrolmentTotal+'</div></div>'+
-'<div class="kpi-card kpi-purple p-5 card-hover"><div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Enrolment Groups</div><div class="text-2xl font-extrabold text-gray-900">'+enrolmentGroups+'</div></div>'+
+'<div onclick="openNsiModal()" class="kpi-card kpi-purple p-5 card-hover cursor-pointer"><div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Not Signed In ('+nsiDate+')</div><div class="text-2xl font-extrabold text-red-600">'+nsiData().noIn.length+'</div></div>'+
 '<div class="kpi-card kpi-emerald p-5 card-hover"><div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Sites with Enrolment</div><div class="text-2xl font-extrabold text-gray-900">'+enrolmentSites+'</div></div>'+
 '</div><div id="studentContent"></div></div>';
 if(studentTab==='enrolments'){renderStudentEnrolments()}else if(studentTab==='students'){renderStudentList()}else if(studentTab==='registers'){renderStudentRegisters()}else if(studentTab==='staffattendance'){renderStaffAttendanceRegister()}else{renderWorkplaceHosts()}
@@ -2523,6 +2545,7 @@ return '<tr class="border-b border-gray-50 hover:bg-gray-50/50"><td class="px-4 
 h+='<div class="p-10 text-center text-sm text-gray-400">No class registers have been taken yet.'+(canMark?' Click <strong>Take Attendance</strong> to start one.':'')+'</div>';
 }
 h+='</div>';
+h+=nsiCard();
 const regs=[...appRegisters].sort((a,b)=>{
 const mo=['January','February','March','April','May','June','July','August','September','October','November','December'];
 function key(m){const parts=m.replace(/\u2013/g,'-').split(' ').filter(p=>isNaN(p));const mm=mo.findIndex(x=>parts.includes(x));const yy=m.match(/(\d{4})/);return (yy?Number(yy[1]):2026)*100+(mm>=0?mm:0)}
@@ -2532,6 +2555,56 @@ regs.forEach(r=>{const isWP=r.type==='Workplace Register';
 h+='<tr class="border-b border-gray-50 hover:bg-gray-50/50"><td class="px-4 py-3 font-bold text-gray-900 whitespace-nowrap">'+r.month+'</td><td class="px-4 py-3 text-gray-700">'+r.title+'</td><td class="px-4 py-3"><span class="badge '+(isWP?'badge-purple':'badge-blue')+'">'+r.type+'</span></td><td class="px-4 py-3"><div class="flex flex-wrap gap-1">'+(r.periods||[]).map(p=>'<span class="text-[10px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded font-mono">'+p+'</span>').join('')+'</div></td><td class="px-4 py-3 text-right font-bold text-gray-900">'+r.students.length+'</td><td class="px-4 py-3"><button onclick="openRegisterDetail(\''+r.month+'\')" class="px-2.5 py-1 bg-blue-50 text-blue-700 hover:bg-blue-100 text-[11px] font-bold rounded-lg transition-colors">View</button></td></tr>'});
 h+='</tbody></table></div></div>';el.innerHTML=h}
 
+// ---- Not-signed-in report: who has no Present/Late sign-in for a chosen day ----
+let nsiDate=new Date().toISOString().slice(0,10);
+function nsiCard(){
+return '<div class="bg-white rounded-xl border border-gray-100 overflow-hidden mb-6"><div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between flex-wrap gap-3"><div><h3 class="text-sm font-semibold text-gray-700">Not Signed In</h3><p class="text-[10px] text-gray-400">Student portal sign-in / sign-out for the chosen day</p></div><div class="flex items-center gap-2"><input type="date" id="nsiDate" value="'+nsiDate+'" onchange="nsiDate=this.value;nsiRender()" class="px-3 py-2 border border-gray-200 rounded-lg text-sm"><button onclick="nsiCopy()" class="px-3 py-2 bg-gray-100 text-gray-700 text-xs font-bold rounded-lg hover:bg-gray-200">Copy list</button><button onclick="window.print()" class="px-3 py-2 bg-blue-600 text-white text-xs font-bold rounded-lg hover:bg-blue-700">Print</button></div></div><div class="p-4 nsiBody">'+nsiHtml()+'</div></div>';
+}
+function nsiData(){
+const regs=appClassAttendance.filter(r=>(r.date||'').slice(0,10)===nsiDate);
+const st={};
+regs.forEach(r=>(r.marks||[]).forEach(m=>{if(m.method==='self'&&m.checkedInAt){const k=(m.student||'').trim().toLowerCase();const o=st[k]||(st[k]={});if(!o.inAt||m.checkedInAt<o.inAt)o.inAt=m.checkedInAt;if(m.checkedOutAt)o.outAt=m.checkedOutAt}}));
+const roster=appStudentRoster.filter(s=>s.isActive!==false).sort((a,b)=>a.name.localeCompare(b.name));
+const noIn=[],noOut=[];
+roster.forEach(s=>{const o=st[(s.name||'').trim().toLowerCase()];if(!o)noIn.push(s.name);else if(!o.outAt)noOut.push({name:s.name,inAt:o.inAt})});
+return{total:roster.length,noIn,noOut};
+}
+function nsiList(title,color,items,fmt){
+return '<div class="mb-5"><div class="text-xs font-bold mb-2 '+color+'">'+title+' ('+items.length+')</div>'+(items.length?'<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">'+items.map(o=>'<div class="flex items-center justify-between p-2 bg-gray-50 rounded-lg"><span class="text-sm text-gray-800">'+UI.escapeHtml(fmt?o.name:o)+'</span>'+(fmt?'<span class="text-[10px] text-gray-400">in '+new Date(o.inAt).toLocaleTimeString()+'</span>':'')+'</div>').join('')+'</div>':'<div class="text-sm text-emerald-600">None</div>')+'</div>';
+}
+function nsiHtml(){
+const x=nsiData();const st=nsiStreaks();const sm={};st.rows.forEach(r=>sm[r.name]=r);
+const rows=[];
+x.noIn.forEach(n=>rows.push({name:n,streak:(sm[n]||{streak:0}).streak,kind:'in'}));
+x.noOut.forEach(o=>rows.push({name:o.name,streak:0,kind:'out',inT:o.inAt}));
+rows.sort((a,b)=>b.streak-a.streak||(a.kind===b.kind?0:a.kind==='in'?-1:1)||a.name.localeCompare(b.name));
+const fl=rows.filter(r=>r.streak>=3).length;
+const T=t=>new Date(t).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+let h='<div class="text-sm text-gray-700 mb-3"><strong class="text-red-600">'+x.noIn.length+'</strong> not signed in &nbsp;&middot;&nbsp; <strong class="text-amber-600">'+x.noOut.length+'</strong> signed in but not out'+(fl?' &nbsp;&middot;&nbsp; <strong class="text-red-700">&#9873; '+fl+' missing 3+ days in a row</strong>':'')+'</div>';
+if(!rows.length)return h+'<div class="text-sm text-emerald-600 font-semibold">Everyone signed in and out.</div>';
+h+='<table class="w-full text-sm"><thead class="bg-gray-50"><tr><th class="text-left px-3 py-2 text-xs uppercase text-gray-600">Student</th><th class="text-left px-3 py-2 text-xs uppercase text-gray-600">Status</th><th class="text-left px-3 py-2 text-xs uppercase text-gray-600">Days missed</th></tr></thead><tbody>'+rows.map(r=>'<tr class="border-b border-gray-100 '+(r.streak>=3?'bg-red-50':'')+'"><td class="px-3 py-2 font-medium text-gray-800">'+(r.streak>=3?'&#9873; ':'')+UI.escapeHtml(r.name)+'</td><td class="px-3 py-2 '+(r.kind==='in'?'text-red-600':'text-amber-600')+'">'+(r.kind==='in'?'Not signed in':'Signed in '+T(r.inT)+', not signed out')+'</td><td class="px-3 py-2">'+(r.kind==='in'?(r.streak>=3?'<strong class="text-red-700">'+r.streak+' in a row</strong>':r.streak):'')+'</td></tr>').join('')+'</tbody></table>';
+return h;
+}
+function nsiStreaks(){
+const dates=[...new Set(appClassAttendance.map(r=>(r.date||'').slice(0,10)).filter(d=>d&&d<=nsiDate))].sort();
+const roster=appStudentRoster.filter(s=>s.isActive!==false).sort((a,b)=>a.name.localeCompare(b.name));
+const inSet={};
+appClassAttendance.forEach(r=>{const d=(r.date||'').slice(0,10);(r.marks||[]).forEach(m=>{if(m.method==='self'&&m.checkedInAt)inSet[d+'|'+(m.student||'').trim().toLowerCase()]=1})});
+return{days:dates.length,rows:roster.map(s=>{const k=(s.name||'').trim().toLowerCase();let n=0,last=null;for(let i=dates.length-1;i>=0;i--){if(inSet[dates[i]+'|'+k])break;n++}
+for(let i=dates.length-1;i>=0;i--){if(inSet[dates[i]+'|'+k]){last=dates[i];break}}
+return{name:s.name,streak:n,last:last,today:!!inSet[nsiDate+'|'+k]}})};
+}
+function closeNsiFull(){const e=document.getElementById('nsiFull');if(e)e.remove();document.body.style.overflow=''}
+function openNsiModal(){
+closeNsiFull();
+const d=document.createElement('div');d.id='nsiFull';
+d.style.cssText='position:fixed;inset:0;z-index:99999;background:#f8fafc;overflow:auto;padding:24px';
+d.innerHTML='<div style="max-width:1400px;margin:0 auto"><div class="flex items-center justify-between mb-4"><h2 class="text-xl font-extrabold text-gray-900">Not Signed In</h2><button onclick="closeNsiFull()" class="px-4 py-2 text-sm font-bold bg-gray-800 text-white rounded-lg hover:bg-gray-900">&times; Close</button></div>'+nsiCard()+'</div>';
+document.body.appendChild(d);document.body.style.overflow='hidden';
+}
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeNsiFull()});
+function nsiRender(){const h=nsiHtml();document.querySelectorAll('.nsiBody').forEach(b=>b.innerHTML=h)}
+function nsiCopy(){const x=nsiData();const t='Not signed in - '+nsiDate+' ('+x.noIn.length+')\n'+x.noIn.join('\n')+'\n\nSigned in, no sign-out ('+x.noOut.length+')\n'+x.noOut.map(o=>o.name).join('\n');navigator.clipboard&&navigator.clipboard.writeText(t)}
 // ---- Class attendance: take / view / edit ----
 let attendanceDraft=null;
 function openTakeAttendanceModal(id){
